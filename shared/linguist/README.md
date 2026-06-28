@@ -18,7 +18,7 @@
   ace_mode: textmate
   code_mirror_mode: text/x-mux
   language_id: <assigned by Linguist>
-  source: https://github.com/DerekCorniello/mux-lang
+  source: https://github.com/muxlang/mux-syntax-highlighting
 ```
 
 ## Steps to Contribute

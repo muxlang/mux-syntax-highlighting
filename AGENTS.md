@@ -1,0 +1,60 @@
+# mux-syntax-highlighting: AI Agent Guidelines
+
+TextMate-family syntax highlighting for Mux (VSCode/Sublime/JetBrains) + the
+editor-support configs + the canonical syntax spec. Part of the multi-repo
+[muxlang](https://github.com/muxlang) ecosystem. Tree-sitter is a SEPARATE repo
+(`tree-sitter-mux`).
+
+## Critical Rules
+
+- **No special characters** - avoid em-dashes, emojis, or other non-ASCII in code,
+  comments, or commit messages.
+- **Understand existing code first**; follow existing patterns.
+- **Generated artifacts are generated, not hand-edited:** `textmate-mux/source.mux.json`
+  (+ the vscode copy) come from `generate-syntax.js` (gitignored); the
+  `editor-support/` configs come from `build_syntax_highlighting.py`. Edit the spec,
+  then regenerate.
+
+## The spec feeds THREE repos (keep vendored copies in sync)
+
+The canonical spec drives three highlighting consumers, each vendoring its artifact:
+1. This repo's TextMate grammar.
+2. `tree-sitter-mux` - its `grammar.js` reads a VENDORED copy of `syntax-matrix.json`,
+   and `queries/highlights.scm` is generated from the spec.
+3. `mux-website` - its Shiki grammar `src/shiki/mux.json`.
+
+When you change the spec, update the vendored copies in those repos. A cross-repo
+parity-check mechanism is planned follow-up.
+
+## Two specs today (consolidation pending)
+
+- `shared/syntax-matrix.json` - drives the TextMate grammar (and the tree-sitter
+  grammar in the other repo).
+- `editor-support/spec/definitions.json` - drives the editor-support configs.
+
+Consolidating these into one spec + one generator (porting
+`build_syntax_highlighting.py` into `generate-syntax.js`, emitting all formats incl.
+the website Shiki grammar) is planned. Until then, keep both specs consistent.
+
+## Helix
+
+`editor-support/helix/languages.toml` uses a GIT grammar source pointing at
+`muxlang/tree-sitter-mux` (NOT a local path - that would dangle).
+
+## Development / CI
+
+```bash
+node scripts/check-parity.js                          # TextMate parity (CI)
+python3 scripts/build_syntax_highlighting.py --check  # editor-support parity (CI)
+```
+
+CI runs both parity checks + a SonarQube scan. The VSCode extension is packaged
+with `vsce` (release flow); versions are independent (no cross-repo sync).
+
+## Related repos
+
+- `tree-sitter-mux` - tree-sitter grammar (Neovim/Helix/Emacs).
+- `mux-website` - docs site (third spec consumer, Shiki).
+- `mux-compiler` - the language/compiler.
+
+**Add to this document as you learn vital information.**

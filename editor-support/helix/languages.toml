@@ -9,4 +9,4 @@ grammar = "mux"
 
 [[grammar]]
 name = "mux"
-source = { path = "../tree-sitter-mux" }
+source = { git = "https://github.com/muxlang/tree-sitter-mux", rev = "main" }

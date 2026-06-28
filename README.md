@@ -1,106 +1,54 @@
-# Mux Syntax Highlighting
+# mux-syntax-highlighting
 
-First-class syntax highlighting support for the Mux programming language across editors and tools.
+TextMate-family syntax highlighting for the [Mux programming language](https://github.com/muxlang)
+- **VSCode, Sublime, JetBrains** - plus drop-in editor configs and the **canonical
+syntax spec**. Part of the multi-repo [muxlang](https://github.com/muxlang) ecosystem.
+
+Tree-sitter-based highlighting (Neovim, Helix, Emacs) lives in the separate
+[tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 
 ## Structure
-- `textmate-mux/` - TextMate grammar (VSCode, Sublime, JetBrains)
-  - `vscode-language-mux/` - VSCode extension package
-- `tree-sitter-mux/` - Tree-sitter parser (Neovim, Helix, GitHub code intelligence)
-  - `grammar.js` - Tree-sitter grammar
-  - `tree-sitter.json` - ABI 15 config
-  - `queries/` - Highlight queries
-  - `corpus/` - Tests
-- `shared/` - Canonical syntax data and cross-track artifacts
-  - `syntax-matrix.json` - Single source of truth for syntax elements
-  - `linguist/` - GitHub Linguist contribution artifacts
-  - `samples/` - Validation samples for both tracks
-- `scripts/` - Generates both grammars from `shared/syntax-matrix.json`
 
----
+- `shared/syntax-matrix.json` - the canonical syntax spec (single source of truth).
+- `textmate-mux/` - TextMate grammar (generated from the spec).
+  `vscode-language-mux/` is the VSCode extension package.
+- `editor-support/` - drop-in configs for Sublime, JetBrains, Helix, and Neovim
+  (queries generated from `editor-support/spec/definitions.json`).
+- `scripts/` -
+  - `generate-syntax.js` - generates the TextMate grammar from the spec.
+  - `check-parity.js` - verifies the TextMate grammar matches the spec.
+  - `build_syntax_highlighting.py` - generates/validates the editor-support configs.
 
-## TextMate Grammar Development
+## Development
 
-### Prerequisites
-- Node.js and npm
-- vsce: `npm install -g @vscode/vsce`
-
-### Working with the Grammar
-The canonical TextMate grammar is generated from `shared/syntax-matrix.json`.
-
-Run `node scripts/generate-syntax.js` before packaging or testing editor output.
-
-### Building and Testing (VSCode)
 ```bash
-cd mux-syntax-highlighting
-../scripts/release-syntax.sh
+node scripts/generate-syntax.js                       # regenerate the TextMate grammar
+node scripts/check-parity.js                          # verify TextMate parity (CI)
+python3 scripts/build_syntax_highlighting.py          # regenerate editor-support configs
+python3 scripts/build_syntax_highlighting.py --check  # verify editor-support parity (CI)
 ```
 
-### Scope Names
-The grammar uses standard TextMate scope names. Colors are determined by the active theme:
-- `keyword.control.mux` - if, else, for, while, match, as, in, is
-- `keyword.declaration.mux` - auto, func, returns, return, const, class, interface, enum, import
-- `constant.language.mux` - none, true, false, common
-- `keyword.operator.*.mux` - Assignment, arithmetic, comparison, logical operators
-- `string.quoted.*.mux` - Single and double-quoted strings
-- `constant.numeric.*.mux` - Integer and float literals
-- `comment.*.mux` - Line and block comments
-- `punctuation.mux` - Delimiters (parentheses, braces, brackets)
-- `variable.other.mux` - Identifiers
+CI runs the two parity checks plus a SonarQube scan.
 
-### Editor Compatibility
-See `textmate-mux/COMPATIBILITY.md` for Sublime Text and JetBrains setup.
+## The spec feeds three repos
 
----
+The canonical spec drives three highlighting consumers, each of which vendors its
+generated artifact:
+1. This repo's TextMate grammar.
+2. `tree-sitter-mux`'s grammar + `queries/highlights.scm` (vendors a copy of the spec).
+3. `mux-website`'s Shiki grammar (`src/shiki/mux.json`).
 
-## Tree-sitter Grammar Development
+When you change the spec, update the vendored copies in those repos. (There are
+currently two spec files - `syntax-matrix.json` and
+`editor-support/spec/definitions.json`; consolidating them into one generator is
+planned follow-up work.)
 
-### Prerequisites
-- Node.js and npm
-- tree-sitter CLI: `npm install -g tree-sitter-cli`
+## Related repositories
 
-### Building and Testing
-```bash
-cd mux-syntax-highlighting/tree-sitter-mux
+- [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) - tree-sitter grammar (Neovim/Helix/Emacs)
+- [mux-website](https://github.com/muxlang/mux-website) - docs site (third spec consumer)
+- [mux-compiler](https://github.com/muxlang/mux-compiler) - the language/compiler
 
-# Generate parser (ABI 15, requires tree-sitter.json)
-tree-sitter generate grammar.js
+## License
 
-# Run corpus tests (files in test/corpus/)
-tree-sitter test
-
-# Update test expectations with current parser output
-tree-sitter test --update
-
-# Parse a file and see the syntax tree (pipe input)
-echo 'func main() returns void { auto x = 42 }' | tree-sitter parse
-
-# Parse an actual file
-tree-sitter parse /home/derekcorn/code/mux-lang/mux-syntax-highlighting/shared/samples/validation.mux
-```
-
-**Note:** The `tree-sitter highlight` command requires proper language registration in your config. For reliable highlighting, integrate with Neovim/Helix (see INTEGRATION.md).
-
-### Highlight Queries
-- `queries/highlights.scm` - Generated syntax highlighting queries
-- Queries map tree-sitter nodes to TextMate-like scope names
-
-### Editor Integration
-See `tree-sitter-mux/INTEGRATION.md` for Neovim and Helix setup instructions.
-
----
-
-## Validation
-Test samples are in `shared/samples/`. Use:
-
-1. Regenerate both grammars after editing `shared/syntax-matrix.json`:
-   `node scripts/generate-syntax.js`
-2. TextMate: package from `textmate-mux/vscode-language-mux/` and install the VSIX locally
-3. Tree-sitter: `tree-sitter test` in `tree-sitter-mux/`
-4. Parity: `node scripts/check-parity.js`
-
-## Release Helper
-- `../scripts/release-syntax.sh` regenerates the syntax files, rebuilds Tree-sitter, and packages the VSCode extension.
-- Generated editor outputs are intentionally not committed.
-
-## GitHub Highlighting
-Contribute to GitHub Linguist using artifacts in `shared/linguist/`. Status tracked in `shared/linguist/README.md`.
+[MIT](LICENSE)

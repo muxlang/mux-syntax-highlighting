@@ -52,29 +52,22 @@ function assertContainsAll(haystack, needles, label) {
 }
 
 const matrix = readJson('shared/syntax-matrix.json');
-// Use only trusted system PATH entries for security
+// Regenerate the TextMate grammar from the canonical spec. (The tree-sitter
+// grammar + highlights now live in the tree-sitter-mux repo; their parity is
+// checked there.)
 const safePath = ['/usr/bin', '/usr/local/bin', '/bin'].filter(p => fs.existsSync(p)).join(path.delimiter);
 const execOptions = { stdio: 'inherit', env: { ...process.env, PATH: safePath } };
 execFileSync(process.execPath, [path.join(root, 'scripts', 'generate-syntax.js')], execOptions);
-execFileSync('tree-sitter', ['generate', 'grammar.js'], { ...execOptions, cwd: path.join(root, 'tree-sitter-mux') });
-const generatedSyntax = require(path.join(root, 'tree-sitter-mux/generated/syntax.js'));
+
 const textmateCanonical = readJson('textmate-mux/source.mux.json');
 const textmatePackage = readJson('textmate-mux/vscode-language-mux/source.mux.json');
-const treeSitterGrammar = readText('tree-sitter-mux/grammar.js');
-const treeSitterQueries = readText('tree-sitter-mux/queries/highlights.scm');
 
 assert(
   stableStringify(textmateCanonical) === stableStringify(textmatePackage),
   'TextMate canonical grammar and VSCode package grammar are out of sync',
 );
 
-assert(
-  stableStringify(generatedSyntax) === stableStringify(matrix),
-  'Tree-sitter generated syntax module is out of sync with shared syntax matrix',
-);
-
 const normalizedTextmate = readText('textmate-mux/source.mux.json').replaceAll('\\', '');
-const normalizedTreeSitter = readText('tree-sitter-mux/src/grammar.json').replaceAll('\\', '');
 
 const expectedKeywords = [
   ...matrix.keywords.control,
@@ -90,10 +83,6 @@ assertContainsAll(normalizedTextmate, expectedKeywords, 'TextMate keywords');
 assertContainsAll(normalizedTextmate, expectedOperators, 'TextMate operators');
 assertContainsAll(normalizedTextmate, expectedDelimiters, 'TextMate delimiters');
 
-assertContainsAll(normalizedTreeSitter, expectedKeywords, 'Tree-sitter keywords');
-assertContainsAll(normalizedTreeSitter, expectedOperators, 'Tree-sitter operators');
-assertContainsAll(normalizedTreeSitter, expectedDelimiters, 'Tree-sitter delimiters');
-
 assertContainsAll(
   normalizedTextmate,
   [
@@ -108,34 +97,4 @@ assertContainsAll(
   'TextMate scopes',
 );
 
-assertContainsAll(
-  treeSitterQueries,
-  [
-    '@comment',
-    '@comment.line',
-    '@comment.block',
-    '@keyword',
-    '@keyword.control',
-    '@keyword.declaration',
-    '@constant.language',
-    '@number',
-    '@string.quoted.single',
-    '@string.quoted.double',
-    '@string.quoted.triple.double',
-    '@variable.language',
-    '@variable.other',
-    '@punctuation.bracket',
-    '@function',
-    '@function.call',
-    '@function.declaration',
-    '@type',
-  ],
-  'Tree-sitter highlight captures',
-);
-
-assert(
-  !fs.existsSync(path.join(root, 'tree-sitter-mux/queries/mux/highlights.scm')),
-  'Remove tree-sitter-mux/queries/mux/highlights.scm and keep only tree-sitter-mux/queries/highlights.scm',
-);
-
-console.log('Mux syntax parity checks passed.');
+console.log('Mux TextMate syntax parity checks passed.');
