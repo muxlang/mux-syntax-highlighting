@@ -12,7 +12,7 @@ editor-support configs + the canonical syntax spec. Part of the multi-repo
 - **Understand existing code first**; follow existing patterns.
 - **Generated artifacts are generated, not hand-edited:** `textmate-mux/source.mux.json`
   (+ the vscode copy) come from `generate-syntax.js` (gitignored); the
-  `editor-support/` configs come from `build_syntax_highlighting.py`. Edit the spec,
+  `editor-support/` configs come from `build-editor-support.js`. Edit the spec,
   then regenerate.
 
 ## The spec feeds THREE repos (keep vendored copies in sync)
@@ -31,13 +31,13 @@ parity-check mechanism is planned follow-up.
 `shared/syntax-matrix.json` is the SINGLE source of truth (validated against the
 compiler lexer). Both generators read it:
 - `generate-syntax.js` - the TextMate grammar.
-- `build_syntax_highlighting.py` - the editor-support configs (Sublime, JetBrains,
-  Helix/Neovim queries, vscode config). It adapts the matrix via `spec_from_matrix()`.
+- `build-editor-support.js` - the editor-support configs (Sublime, JetBrains,
+  Helix/Neovim queries, vscode config). It adapts the matrix via `specFromMatrix()`.
 
 The old `editor-support/spec/definitions.json` was deleted (it had drifted - e.g.
 listed `ok`/`err` as keywords and `::`/`->` as operators, none of which are real
-Mux tokens). Optional future cleanup: port the Python generator into JS so there is
-one generator as well as one spec, and emit the website Shiki grammar from here too.
+Mux tokens). Both generators are now Node (the Python generator was ported).
+Optional future cleanup: emit the website Shiki grammar from here too.
 
 ## Helix
 
@@ -47,8 +47,8 @@ one generator as well as one spec, and emit the website Shiki grammar from here 
 ## Development / CI
 
 ```bash
-node scripts/check-parity.js                          # TextMate parity (CI)
-python3 scripts/build_syntax_highlighting.py --check  # editor-support parity (CI)
+node scripts/check-parity.js                  # TextMate parity (CI)
+node scripts/build-editor-support.js --check  # editor-support parity (CI)
 ```
 
 CI runs both parity checks + a SonarQube scan. The VSCode extension is packaged

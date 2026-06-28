@@ -54,7 +54,7 @@
           "patterns": [
             {
               "name": "constant.character.escape.mux",
-              "match": "\\\\\\\\."
+              "match": "\\\\."
             }
           ]
         },
@@ -65,7 +65,7 @@
           "patterns": [
             {
               "name": "constant.character.escape.mux",
-              "match": "\\\\\\\\."
+              "match": "\\\\."
             }
           ]
         }

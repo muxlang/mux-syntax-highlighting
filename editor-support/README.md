@@ -14,13 +14,13 @@ punctuation treatment stays consistent between editors.
 ## Build
 
 ```bash
-python3 scripts/build_syntax_highlighting.py
+node scripts/build-editor-support.js
 ```
 
 ## Verify generated output is up to date
 
 ```bash
-python3 scripts/build_syntax_highlighting.py --check
+node scripts/build-editor-support.js --check
 ```
 
 ## Generated targets

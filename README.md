@@ -17,15 +17,15 @@ Tree-sitter-based highlighting (Neovim, Helix, Emacs) lives in the separate
 - `scripts/` -
   - `generate-syntax.js` - generates the TextMate grammar from the spec.
   - `check-parity.js` - verifies the TextMate grammar matches the spec.
-  - `build_syntax_highlighting.py` - generates/validates the editor-support configs.
+  - `build-editor-support.js` - generates/validates the editor-support configs.
 
 ## Development
 
 ```bash
-node scripts/generate-syntax.js                       # regenerate the TextMate grammar
-node scripts/check-parity.js                          # verify TextMate parity (CI)
-python3 scripts/build_syntax_highlighting.py          # regenerate editor-support configs
-python3 scripts/build_syntax_highlighting.py --check  # verify editor-support parity (CI)
+node scripts/generate-syntax.js                     # regenerate the TextMate grammar
+node scripts/check-parity.js                        # verify TextMate parity (CI)
+node scripts/build-editor-support.js                # regenerate editor-support configs
+node scripts/build-editor-support.js --check        # verify editor-support parity (CI)
 ```
 
 CI runs the two parity checks plus a SonarQube scan.
@@ -40,7 +40,7 @@ generated artifact:
 
 When you change the spec, update the vendored copies in those repos. There is a
 single canonical spec - `shared/syntax-matrix.json` - read by both generators
-(`generate-syntax.js` for the TextMate grammar, `build_syntax_highlighting.py` for
+(`generate-syntax.js` for the TextMate grammar, `build-editor-support.js` for
 the editor-support configs).
 
 ## Related repositories
