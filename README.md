@@ -48,6 +48,7 @@ the editor-support configs).
 - [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) - tree-sitter grammar (Neovim/Helix/Emacs)
 - [mux-website](https://github.com/muxlang/mux-website) - docs site (third spec consumer)
 - [mux-compiler](https://github.com/muxlang/mux-compiler) - the language/compiler
+- [context](https://github.com/muxlang/context) - cross-repo architecture, design notes, glossary, releases
 
 ## License
 

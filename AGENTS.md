@@ -5,6 +5,9 @@ editor-support configs + the canonical syntax spec. Part of the multi-repo
 [muxlang](https://github.com/muxlang) ecosystem. Tree-sitter is a SEPARATE repo
 (`tree-sitter-mux`).
 
+> Cross-repo architecture, design rationale, the feature map, and the release
+> process live in [muxlang/context](https://github.com/muxlang/context).
+
 ## Critical Rules
 
 - **No special characters** - avoid em-dashes, emojis, or other non-ASCII in code,
