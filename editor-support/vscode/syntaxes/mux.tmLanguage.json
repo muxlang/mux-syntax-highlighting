@@ -83,11 +83,11 @@
       "patterns": [
         {
           "name": "keyword.control.mux",
-          "match": "\\b(?:if|else|for|while|match|break|continue|return|in|func|class|interface|enum|import|const|auto|common|returns|is|as)\\b"
+          "match": "\\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|is|as|in)\\b"
         },
         {
           "name": "constant.language.mux",
-          "match": "\\b(?:true|false|none|ok|err)\\b"
+          "match": "\\b(?:true|false|none)\\b"
         }
       ]
     },
@@ -95,7 +95,7 @@
       "patterns": [
         {
           "name": "storage.type.builtin.mux",
-          "match": "\\b(?:int|float|bool|char|string|void|optional|result)\\b"
+          "match": "\\b(?:string|bool|void|int|float|char|optional|result|list|map|tuple|set|range|Stringable|Hashable|Thread|Error|Self)\\b"
         }
       ]
     },
@@ -103,7 +103,7 @@
       "patterns": [
         {
           "name": "keyword.operator.mux",
-          "match": "(?:==|!=|>=|<=|>|<|&&|\\|\\||!|=|\\+=|-=|\\*=|/=|%=|\\+|-|\\*|/|%|\\.|::|->)"
+          "match": "(?:=|\\+=|-=|\\*=|/=|%=|\\+|-|\\*|\\*\\*|/|%|\\+\\+|--|==|!=|<|<=|>|>=|&&|\\|\\||!|&|\\.|\\.\\.)"
         }
       ]
     },

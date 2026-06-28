@@ -38,10 +38,10 @@ generated artifact:
 2. `tree-sitter-mux`'s grammar + `queries/highlights.scm` (vendors a copy of the spec).
 3. `mux-website`'s Shiki grammar (`src/shiki/mux.json`).
 
-When you change the spec, update the vendored copies in those repos. (There are
-currently two spec files - `syntax-matrix.json` and
-`editor-support/spec/definitions.json`; consolidating them into one generator is
-planned follow-up work.)
+When you change the spec, update the vendored copies in those repos. There is a
+single canonical spec - `shared/syntax-matrix.json` - read by both generators
+(`generate-syntax.js` for the TextMate grammar, `build_syntax_highlighting.py` for
+the editor-support configs).
 
 ## Related repositories
 

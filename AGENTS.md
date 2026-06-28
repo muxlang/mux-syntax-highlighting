@@ -26,15 +26,18 @@ The canonical spec drives three highlighting consumers, each vendoring its artif
 When you change the spec, update the vendored copies in those repos. A cross-repo
 parity-check mechanism is planned follow-up.
 
-## Two specs today (consolidation pending)
+## One canonical spec
 
-- `shared/syntax-matrix.json` - drives the TextMate grammar (and the tree-sitter
-  grammar in the other repo).
-- `editor-support/spec/definitions.json` - drives the editor-support configs.
+`shared/syntax-matrix.json` is the SINGLE source of truth (validated against the
+compiler lexer). Both generators read it:
+- `generate-syntax.js` - the TextMate grammar.
+- `build_syntax_highlighting.py` - the editor-support configs (Sublime, JetBrains,
+  Helix/Neovim queries, vscode config). It adapts the matrix via `spec_from_matrix()`.
 
-Consolidating these into one spec + one generator (porting
-`build_syntax_highlighting.py` into `generate-syntax.js`, emitting all formats incl.
-the website Shiki grammar) is planned. Until then, keep both specs consistent.
+The old `editor-support/spec/definitions.json` was deleted (it had drifted - e.g.
+listed `ok`/`err` as keywords and `::`/`->` as operators, none of which are real
+Mux tokens). Optional future cleanup: port the Python generator into JS so there is
+one generator as well as one spec, and emit the website Shiki grammar from here too.
 
 ## Helix
 

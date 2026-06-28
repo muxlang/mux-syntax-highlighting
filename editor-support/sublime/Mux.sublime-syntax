@@ -46,15 +46,15 @@ contexts:
     - match: '\b(?:\d+\.\d+|\d+)\b'
       scope: constant.numeric.mux
   keywords:
-    - match: '\b(?:if|else|for|while|match|break|continue|return|in|func|class|interface|enum|import|const|auto|common|returns|is|as)\b'
+    - match: '\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|is|as|in)\b'
       scope: keyword.control.mux
-    - match: '\b(?:true|false|none|ok|err)\b'
+    - match: '\b(?:true|false|none)\b'
       scope: constant.language.mux
   types:
-    - match: '\b(?:int|float|bool|char|string|void|optional|result)\b'
+    - match: '\b(?:string|bool|void|int|float|char|optional|result|list|map|tuple|set|range|Stringable|Hashable|Thread|Error|Self)\b'
       scope: storage.type.builtin.mux
   operators:
-    - match: '(?:==|!=|>=|<=|&&|\|\||\+=|-=|\*=|/=|%=|::|->|>|<|!|=|\+|-|\*|/|%|\.)'
+    - match: '(?:\+=|-=|\*=|/=|%=|\*\*|\+\+|--|==|!=|<=|>=|&&|\|\||\.\.|=|\+|-|\*|/|%|<|>|!|&|\.)'
       scope: keyword.operator.mux
   punctuation:
     - match: '[(){}\[\]]'

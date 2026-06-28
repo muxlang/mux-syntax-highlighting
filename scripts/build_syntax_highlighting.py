@@ -10,7 +10,7 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SPEC_PATH = REPO_ROOT / "editor-support" / "spec" / "definitions.json"
+SPEC_PATH = REPO_ROOT / "shared" / "syntax-matrix.json"
 PUSH_LINE = "      push:"
 POP_TRUE_LINE = "          pop: true"
 TEXTMATE_FILENAME = "mux.tmLanguage.json"
@@ -19,7 +19,45 @@ TREE_SITTER_HIGHLIGHTS = "highlights.scm"
 
 def read_spec() -> dict[str, Any]:
     with SPEC_PATH.open("r", encoding="utf-8") as file:
-        return json.load(file)
+        matrix = json.load(file)
+    return spec_from_matrix(matrix)
+
+
+def spec_from_matrix(matrix: dict[str, Any]) -> dict[str, Any]:
+    """Adapt the canonical shared/syntax-matrix.json into the structure the
+    editor-support generators consume. syntax-matrix.json is the single source of
+    truth (validated against the compiler lexer); this replaces the old, drifted
+    editor-support/spec/definitions.json."""
+    keywords = matrix["keywords"]
+    operators = {
+        category: [entry["symbol"] for entry in entries]
+        for category, entries in matrix["operators"].items()
+    }
+    brackets = [d["symbol"] for d in matrix["delimiters"] if d["symbol"] in {"(", ")", "{", "}", "[", "]"}]
+    delimiters = [d["symbol"] for d in matrix["delimiters"] if d["symbol"] in {",", ":"}]
+    return {
+        "language": {
+            "name": matrix["language"],
+            "scope_name": matrix["scope"],
+            "file_extensions": [ext.lstrip(".") for ext in matrix["file_extensions"]],
+        },
+        "keywords": {
+            "control": keywords["control"],
+            # is/as/in are operator keywords in the matrix; group them with
+            # declarations for keyword highlighting.
+            "declaration": keywords["declaration"] + keywords["operator"],
+            "literal": keywords["boolean_literals"] + keywords["constant"],
+        },
+        "types": {"builtin": matrix["types"]["builtin"]},
+        "operators": operators,
+        "punctuation": {"brackets": brackets, "delimiters": delimiters},
+        # Word-bounded presentation regexes for editor highlighting; the canonical
+        # spec carries lexer-style patterns, not these editor variants.
+        "regex": {
+            "identifier": r"\b[_A-Za-z][_A-Za-z0-9]*\b",
+            "number": r"\b(?:\d+\.\d+|\d+)\b",
+        },
+    }
 
 
 def grouped_keywords(spec: dict[str, Any]) -> list[str]:
