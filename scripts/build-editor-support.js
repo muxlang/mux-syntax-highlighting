@@ -54,8 +54,8 @@ function specFromMatrix(matrix) {
     // Word-bounded presentation regexes for editor highlighting; the canonical
     // spec carries lexer-style patterns, not these editor variants.
     regex: {
-      identifier: '\\b[_A-Za-z][_A-Za-z0-9]*\\b',
-      number: '\\b(?:\\d+\\.\\d+|\\d+)\\b',
+      identifier: String.raw`\b[_A-Za-z][_A-Za-z0-9]*\b`,
+      number: String.raw`\b(?:\d+\.\d+|\d+)\b`,
     },
   };
 }
@@ -113,7 +113,7 @@ function buildTextmate(spec) {
       comments: {
         patterns: [
           { name: 'comment.line.double-slash.mux', match: '//.*$' },
-          { name: 'comment.block.mux', begin: '/\\*', end: '\\*/' },
+          { name: 'comment.block.mux', begin: String.raw`/\*`, end: String.raw`\*/` },
         ],
       },
       strings: {
@@ -122,13 +122,13 @@ function buildTextmate(spec) {
             name: 'string.quoted.double.mux',
             begin: '"',
             end: '"',
-            patterns: [{ name: 'constant.character.escape.mux', match: '\\\\.' }],
+            patterns: [{ name: 'constant.character.escape.mux', match: String.raw`\\.` }],
           },
           {
             name: 'string.quoted.single.mux',
             begin: "'",
             end: "'",
-            patterns: [{ name: 'constant.character.escape.mux', match: '\\\\.' }],
+            patterns: [{ name: 'constant.character.escape.mux', match: String.raw`\\.` }],
           },
         ],
       },
@@ -137,19 +137,19 @@ function buildTextmate(spec) {
       },
       keywords: {
         patterns: [
-          { name: 'keyword.control.mux', match: `\\b(?:${keywordPattern})\\b` },
-          { name: 'constant.language.mux', match: `\\b(?:${literalPattern})\\b` },
+          { name: 'keyword.control.mux', match: String.raw`\b(?:${keywordPattern})\b` },
+          { name: 'constant.language.mux', match: String.raw`\b(?:${literalPattern})\b` },
         ],
       },
       types: {
-        patterns: [{ name: 'storage.type.builtin.mux', match: `\\b(?:${typePattern})\\b` }],
+        patterns: [{ name: 'storage.type.builtin.mux', match: String.raw`\b(?:${typePattern})\b` }],
       },
       operators: {
         patterns: [{ name: 'keyword.operator.mux', match: `(?:${operatorPattern})` }],
       },
       punctuation: {
         patterns: [
-          { name: 'punctuation.bracket.mux', match: '[(){}\\[\\]]' },
+          { name: 'punctuation.bracket.mux', match: String.raw`[(){}\[\]]` },
           { name: 'punctuation.separator.mux', match: '[,:]' },
         ],
       },
@@ -192,11 +192,11 @@ function buildSublimeSyntax(spec) {
     '  comments:',
     '    - match: //.*$',
     '      scope: comment.line.double-slash.mux',
-    '    - match: /\\*',
+    String.raw`    - match: /\*`,
     '      scope: punctuation.definition.comment.begin.mux',
     PUSH_LINE,
     '        - meta_scope: comment.block.mux',
-    '        - match: \\*/',
+    String.raw`        - match: \*/`,
     '          scope: punctuation.definition.comment.end.mux',
     POP_TRUE_LINE,
     '  strings:',
@@ -204,7 +204,7 @@ function buildSublimeSyntax(spec) {
     '      scope: punctuation.definition.string.begin.mux',
     PUSH_LINE,
     '        - meta_scope: string.quoted.double.mux',
-    "        - match: '\\.'",
+    String.raw`        - match: '\.'`,
     '          scope: constant.character.escape.mux',
     '        - match: \'"\'',
     '          scope: punctuation.definition.string.end.mux',
@@ -213,7 +213,7 @@ function buildSublimeSyntax(spec) {
     '      scope: punctuation.definition.string.begin.mux',
     PUSH_LINE,
     '        - meta_scope: string.quoted.single.mux',
-    "        - match: '\\.'",
+    String.raw`        - match: '\.'`,
     '          scope: constant.character.escape.mux',
     '        - match: "\'"',
     '          scope: punctuation.definition.string.end.mux',
@@ -222,18 +222,18 @@ function buildSublimeSyntax(spec) {
     `    - match: '${spec.regex.number}'`,
     '      scope: constant.numeric.mux',
     '  keywords:',
-    `    - match: '\\b(?:${keywordPattern})\\b'`,
+    String.raw`    - match: '\b(?:${keywordPattern})\b'`,
     '      scope: keyword.control.mux',
-    `    - match: '\\b(?:${literalPattern})\\b'`,
+    String.raw`    - match: '\b(?:${literalPattern})\b'`,
     '      scope: constant.language.mux',
     '  types:',
-    `    - match: '\\b(?:${typePattern})\\b'`,
+    String.raw`    - match: '\b(?:${typePattern})\b'`,
     '      scope: storage.type.builtin.mux',
     '  operators:',
     `    - match: '(?:${operatorPattern})'`,
     '      scope: keyword.operator.mux',
     '  punctuation:',
-    "    - match: '[(){}\\[\\]]'",
+    String.raw`    - match: '[(){}\[\]]'`,
     '      scope: punctuation.bracket.mux',
     "    - match: '[,:]'",
     '      scope: punctuation.separator.mux',
