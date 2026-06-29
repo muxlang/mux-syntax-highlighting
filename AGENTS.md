@@ -6,7 +6,7 @@ editor-support configs + the canonical syntax spec. Part of the multi-repo
 (`tree-sitter-mux`).
 
 > Cross-repo architecture, design rationale, the feature map, and the release
-> process live in [muxlang/context](https://github.com/muxlang/context).
+> process live in [muxlang/mux-context](https://github.com/muxlang/mux-context).
 
 ## Critical Rules
 
