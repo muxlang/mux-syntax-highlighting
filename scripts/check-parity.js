@@ -98,3 +98,12 @@ assertContainsAll(
 );
 
 console.log('Mux TextMate syntax parity checks passed.');
+// Reminder: this script only checks in-repo artifacts. If you changed the
+// canonical spec (shared/syntax-matrix.json), also update the downstream
+// consumers listed in the "Consumers of syntax-matrix.json" checklist in
+// README.md / AGENTS.md (tree-sitter-mux vendored copy; mux-website Monaco +
+// Shiki definitions).
+console.log(
+  'Reminder: spec changes must also be propagated to downstream consumers ' +
+    '(tree-sitter-mux, mux-website). See "Consumers of syntax-matrix.json" in README/AGENTS.',
+);
