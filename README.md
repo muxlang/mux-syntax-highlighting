@@ -30,13 +30,29 @@ node scripts/build-editor-support.js --check        # verify editor-support pari
 
 CI runs the two parity checks plus a SonarQube scan.
 
-## The spec feeds three repos
+## Consumers of syntax-matrix.json
 
-The canonical spec drives three highlighting consumers, each of which vendors its
-generated artifact:
-1. This repo's TextMate grammar.
-2. `tree-sitter-mux`'s grammar + `queries/highlights.scm` (vendors a copy of the spec).
-3. `mux-website`'s Shiki grammar (`src/shiki/mux.json`).
+`shared/syntax-matrix.json` is the canonical language spec, but it fans out to
+several downstream consumers that hold their own copies. `scripts/check-parity.js`
+only validates artifacts generated inside THIS repo; it does not know about the
+downstream consumers, so a spec change can merge here while every downstream copy
+silently goes stale.
+
+Whenever you change `shared/syntax-matrix.json`, treat the following as a required
+checklist and update every consumer:
+
+- [ ] In-repo generated TextMate grammar (`textmate-mux/source.mux.json` + the
+      VSCode package copy) and the `editor-support/` configs. Regenerate with
+      `generate-syntax.js` / `build-editor-support.js`; verified in CI by
+      `scripts/check-parity.js` and `build-editor-support.js --check`.
+- [ ] `tree-sitter-mux` - vendors a copy of `syntax-matrix.json` at its repo root
+      (`grammar.js` reads it, `queries/highlights.scm` is generated from it).
+- [ ] `mux-website` - hand-maintained Monaco (`src/monaco/muxLanguage.ts`) and
+      Shiki (`src/shiki/mux.json`) definitions.
+
+Consumers (2) and (3) have their own drift checks tracked in their own repos, but
+a spec change here must still be propagated to them explicitly. A cross-repo
+parity-check mechanism is planned follow-up (see muxlang/mux-context).
 
 When you change the spec, update the vendored copies in those repos. There is a
 single canonical spec - `shared/syntax-matrix.json` - read by both generators
