@@ -50,9 +50,10 @@ checklist and update every consumer:
 - [ ] `mux-website` - hand-maintained Monaco (`src/monaco/muxLanguage.ts`) and
       Shiki (`src/shiki/mux.json`) definitions.
 
-Consumers (2) and (3) have their own drift checks tracked in their own repos, but
-a spec change here must still be propagated to them explicitly. A cross-repo
-parity-check mechanism is planned follow-up (see muxlang/mux-context).
+The `tree-sitter-mux` and `mux-website` consumers have their own drift checks
+tracked in their own repos, but a spec change here must still be propagated to
+them explicitly. A cross-repo parity-check mechanism is planned follow-up (see
+muxlang/mux-context).
 
 When you change the spec, update the vendored copies in those repos. There is a
 single canonical spec - `shared/syntax-matrix.json` - read by both generators
