@@ -32,6 +32,7 @@
   "enum"
   "import"
   "common"
+  "where"
   "is"
   "as"
   "in"

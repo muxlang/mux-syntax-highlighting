@@ -46,7 +46,7 @@ contexts:
     - match: '\b(?:\d+\.\d+|\d+)\b'
       scope: constant.numeric.mux
   keywords:
-    - match: '\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|is|as|in)\b'
+    - match: '\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|where|is|as|in)\b'
       scope: keyword.control.mux
     - match: '\b(?:true|false|none)\b'
       scope: constant.language.mux

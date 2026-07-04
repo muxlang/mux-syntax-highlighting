@@ -83,7 +83,7 @@
       "patterns": [
         {
           "name": "keyword.control.mux",
-          "match": "\\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|is|as|in)\\b"
+          "match": "\\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|where|is|as|in)\\b"
         },
         {
           "name": "constant.language.mux",
