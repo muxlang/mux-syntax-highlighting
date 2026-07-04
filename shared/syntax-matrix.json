@@ -8,7 +8,7 @@
     ],
     "declaration": [
       "auto", "func", "returns", "return", "const", "class", "interface",
-      "enum", "import", "common"
+      "enum", "import", "common", "where"
     ],
     "operator": ["is", "as", "in"],
     "constant": ["none"],
@@ -16,7 +16,7 @@
     "reserved": [
       "auto", "func", "returns", "return", "if", "else", "for", "while",
       "match", "const", "class", "interface", "enum", "import", "is",
-      "as", "in", "break", "continue", "none", "common"
+      "as", "in", "break", "continue", "none", "common", "where"
     ],
     "note": "none is a tokenized keyword; some/ok/err are enum variant identifiers, not keywords"
   },
