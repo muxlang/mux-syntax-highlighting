@@ -19,7 +19,8 @@ assignees: DerekCorniello
 <!-- Spec changes require updates in tree-sitter-mux and mux-website too. -->
 
 - [ ] Regenerate TextMate grammar and editor-support in this repo
-- [ ] Update tree-sitter-mux vendored syntax-matrix.json
+- [ ] Verify generated artifacts with `node scripts/check-parity.js` and `node scripts/build-editor-support.js --check`
+- [ ] Update tree-sitter-mux vendored syntax-matrix.json and regenerated `queries/highlights.scm`
 - [ ] Update mux-website Monaco and Shiki definitions
 
 ## Example code
