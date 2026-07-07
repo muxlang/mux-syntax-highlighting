@@ -55,7 +55,7 @@
     "other": [
       { "token": "Ref", "symbol": "&", "description": "reference" },
       { "token": "Dot", "symbol": ".", "description": "member access" },
-      { "token": "DotDot", "symbol": "..", "description": "range" }
+      { "token": "DotDot", "symbol": "..", "description": "rest pattern" }
     ]
   },
   "delimiters": [
