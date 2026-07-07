@@ -1,0 +1,34 @@
+name: Syntax spec change
+description: Propose a change to syntax-matrix.json (canonical spec)
+labels: ["needs triage"]
+assignees: ["DerekCorniello"]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why should the spec change?
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: Proposed change
+      description: Which tokens, scopes, or rules change?
+    validations:
+      required: true
+  - type: checkboxes
+    id: sync
+    attributes:
+      label: Downstream sync checklist
+      description: Spec changes require updates in tree-sitter-mux and mux-website too.
+      options:
+        - label: Regenerate TextMate grammar and editor-support in this repo
+        - label: Verify generated artifacts with node scripts/check-parity.js and node scripts/build-editor-support.js --check
+        - label: Update tree-sitter-mux vendored syntax-matrix.json and regenerated queries/highlights.scm
+        - label: Update mux-website Monaco and Shiki definitions
+  - type: textarea
+    id: example
+    attributes:
+      label: Example code
+      render: text
