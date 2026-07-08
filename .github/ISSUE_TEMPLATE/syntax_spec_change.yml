@@ -31,4 +31,4 @@ body:
     id: example
     attributes:
       label: Example code
-      render: text
+      render: mux

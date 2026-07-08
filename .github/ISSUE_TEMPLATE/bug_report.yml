@@ -19,7 +19,12 @@ body:
         - label: JetBrains
         - label: Neovim (editor-support)
         - label: Helix (editor-support)
-        - label: Other (say which in the description)
+        - label: Other
+  - type: input
+    id: other_editor
+    attributes:
+      label: Other editor
+      description: Name and version, if you checked Other.
   - type: textarea
     id: repro
     attributes:
