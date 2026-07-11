@@ -1,0 +1,46 @@
+name: Bug report
+description: Report incorrect syntax highlighting or editor config
+labels: ["needs triage"]
+assignees: ["DerekCorniello"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+  - type: checkboxes
+    id: editors
+    attributes:
+      label: Affected editor(s)
+      options:
+        - label: VSCode
+        - label: Sublime Text
+        - label: JetBrains
+        - label: Neovim (editor-support)
+        - label: Helix (editor-support)
+        - label: Other
+  - type: input
+    id: other_editor
+    attributes:
+      label: Other editor
+      description: Name and version, if you checked Other.
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. Code sample:
+        2. What is highlighted wrong:
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected highlighting
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Extension or config version (if known)
