@@ -33,12 +33,13 @@ extension; the extension version lives in
 - **Consumers of the canonical matrix**: Documented every consumer of
   `syntax-matrix.json` (#2).
 
-<!-- ===========================================================
-     Independent multi-repo versioning begins at 0.5.0.
-     Entries below are inherited from the pre-split (monorepo-era)
-     compiler changelog and are shared history, not specific to
-     mux-syntax-highlighting.
-     =========================================================== -->
+---
+
+> **Independent multi-repo versioning begins at 0.5.0.** Entries below are inherited
+> from the pre-split (monorepo-era) compiler changelog and are shared history, not
+> specific to `mux-syntax-highlighting`.
+
+---
 
 ## [0.4.1] - 2026-06-27
 
