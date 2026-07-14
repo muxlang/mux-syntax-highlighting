@@ -2,7 +2,7 @@
   "name": "language-mux",
   "displayName": "Mux Language Support",
   "description": "Syntax highlighting and language support for the Mux programming language",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "publisher": "mux-lang",
   "license": "MIT",
   "icon": "./mux-icon.png",
@@ -14,13 +14,20 @@
   "engines": {
     "vscode": "^1.80.0"
   },
-  "categories": ["Programming Languages"],
+  "categories": [
+    "Programming Languages"
+  ],
   "contributes": {
     "languages": [
       {
         "id": "mux",
-        "aliases": ["Mux", "mux"],
-        "extensions": [".mux"],
+        "aliases": [
+          "Mux",
+          "mux"
+        ],
+        "extensions": [
+          ".mux"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
