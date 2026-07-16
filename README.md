@@ -32,8 +32,10 @@ one-command install per editor is planned follow-up.
 - `shared/syntax-matrix.json` - the canonical syntax spec (single source of truth).
 - `textmate-mux/` - TextMate grammar (generated from the spec).
   `vscode-language-mux/` is the VSCode extension package.
-- `editor-support/` - drop-in configs for Sublime, JetBrains, Helix, and Neovim
-  (queries generated from `editor-support/spec/definitions.json`).
+- `editor-support/` - drop-in configs for Sublime, JetBrains, and VSCode,
+  generated from the spec. Tree-sitter editors (Neovim, Helix, Emacs) are
+  configured from [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux),
+  which owns the grammar they use.
 - `scripts/` -
   - `generate-syntax.js` - generates the TextMate grammar from the spec.
   - `check-parity.js` - verifies the TextMate grammar matches the spec.
