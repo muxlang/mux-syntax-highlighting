@@ -27,12 +27,6 @@ one-command install per editor is planned follow-up.
 
 ---
 
-## Installation
-
-See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
-and the tree-sitter editors). Everything installs from source for now; a
-one-command install per editor is planned follow-up.
-
 ## Structure
 
 - `shared/syntax-matrix.json` - the canonical syntax spec (single source of truth).
