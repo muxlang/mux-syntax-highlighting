@@ -51,11 +51,15 @@ function specFromMatrix(matrix) {
     types: { builtin: matrix.types.builtin },
     operators,
     punctuation: { brackets, delimiters },
-    // Word-bounded presentation regexes for editor highlighting; the canonical
-    // spec carries lexer-style patterns, not these editor variants.
+    // `identifier` is a word-bounded editor variant with no canonical
+    // counterpart. `number` is built from the canonical literal patterns:
+    // hand-writing a simpler one silently dropped exponents, leading-dot floats
+    // and `_` separators, so Sublime and JetBrains disagreed with every other
+    // consumer about what `1_000.5`, `.5` and `42e5` are. Float precedes integer
+    // because both match at the same offset in `42.0` and the first listed wins.
     regex: {
       identifier: String.raw`\b[_A-Za-z][_A-Za-z0-9]*\b`,
-      number: String.raw`\b(?:\d+\.\d+|\d+)\b`,
+      number: `(?:${matrix.literals.float.pattern}|${matrix.literals.integer.pattern})`,
     },
   };
 }
