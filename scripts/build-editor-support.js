@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-// Generates the editor-support configs (TextMate for VSCode/JetBrains, Sublime,
-// tree-sitter highlight queries for Neovim/Helix) from the canonical
-// shared/syntax-matrix.json. Ported from the former build_syntax_highlighting.py
-// so the whole toolchain is Node.
+// Generates the editor-support configs (TextMate for VSCode/JetBrains, Sublime)
+// from the canonical shared/syntax-matrix.json. Ported from the former
+// build_syntax_highlighting.py so the whole toolchain is Node.
+//
+// Tree-sitter editors (Neovim, Helix, Emacs) are not generated here - they are
+// configured from tree-sitter-mux, which owns the grammar they compile.
 
 const fs = require('node:fs');
 const path = require('node:path');
