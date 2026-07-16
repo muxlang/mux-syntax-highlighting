@@ -15,10 +15,13 @@ tracked in [muxlang/mux-context](https://github.com/muxlang/mux-context).
 
 ## VSCode
 
-The VSCode extension lives in `textmate-mux/vscode-language-mux/`. Build a `.vsix`
-and install it locally:
+The VSCode extension lives in `textmate-mux/vscode-language-mux/`. The TextMate
+grammar it ships is generated from `shared/syntax-matrix.json` and is **not**
+committed, so generate it before packaging or the extension installs without any
+highlighting. From the repo root:
 
 ```bash
+node scripts/generate-syntax.js   # writes the grammar; required on a fresh clone
 cd textmate-mux/vscode-language-mux
 npx @vscode/vsce package          # produces language-mux-<version>.vsix
 code --install-extension language-mux-*.vsix
@@ -27,10 +30,7 @@ code --install-extension language-mux-*.vsix
 Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any
 `.mux` file. Colors come from your active VSCode theme, not the grammar.
 
-The grammar is generated from `shared/syntax-matrix.json`; to rebuild it after a
-spec change, run `node ../../scripts/generate-syntax.js` from the extension
-directory (or `node scripts/generate-syntax.js` from the repo root) before
-packaging.
+Re-run `generate-syntax.js` and repackage after any change to the spec.
 
 ## Tree-sitter editors (Neovim, Helix, Emacs)
 
