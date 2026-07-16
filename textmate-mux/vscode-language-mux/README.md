@@ -17,15 +17,18 @@ The extension grammar is generated from `../../shared/syntax-matrix.json` via `.
 
 ### Build and Package
 ```bash
-cd mux-syntax-highlighting
-../scripts/release-syntax.sh
+cd mux-syntax-highlighting/textmate-mux/vscode-language-mux
+npx @vscode/vsce package          # produces language-mux-<version>.vsix
 ```
 
 ### Install Locally
 ```bash
-code --install-extension language-mux-0.2.1.vsix
-code -r /path/to/mux-lang
+code --install-extension language-mux-*.vsix
 ```
+
+Reload the window afterward (Ctrl+Shift+P -> "Developer: Reload Window").
+
+See [../../INSTALL.md](../../INSTALL.md) for the full cross-editor install guide.
 
 ### Test Changes
 1. Edit `../../shared/syntax-matrix.json`
