@@ -128,13 +128,16 @@ function textmateGrammar() {
       },
       literals: {
         patterns: [
-          {
-            name: 'constant.numeric.integer.mux',
-            match: matrix.literals.integer.pattern,
-          },
+          // Float before integer: both match at the same offset in `42.0`, and
+          // on a tie the earlier pattern wins, so integer-first would take the
+          // `42` and leave `.0` to be coloured as a separate float.
           {
             name: 'constant.numeric.float.mux',
             match: matrix.literals.float.pattern,
+          },
+          {
+            name: 'constant.numeric.integer.mux',
+            match: matrix.literals.integer.pattern,
           },
           {
             name: 'string.quoted.single.mux',

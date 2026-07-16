@@ -43,7 +43,7 @@ contexts:
           scope: punctuation.definition.string.end.mux
           pop: true
   numbers:
-    - match: '\b(?:\d+\.\d+|\d+)\b'
+    - match: '(?:(([0-9][0-9_]*\.[0-9][0-9_]*|\.[0-9][0-9_]*)([eE][-+]?[0-9][0-9_]*)?|[0-9][0-9_]*[eE][-+]?[0-9][0-9_]*)|[0-9][0-9_]*)'
       scope: constant.numeric.mux
   keywords:
     - match: '\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|where|is|as|in)\b'
