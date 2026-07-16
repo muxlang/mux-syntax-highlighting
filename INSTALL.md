@@ -28,7 +28,9 @@ Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any
 `.mux` file. Colors come from your active VSCode theme, not the grammar.
 
 The grammar is generated from `shared/syntax-matrix.json`; to rebuild it after a
-spec change, run `node scripts/generate-syntax.js` before packaging.
+spec change, run `node ../../scripts/generate-syntax.js` from the extension
+directory (or `node scripts/generate-syntax.js` from the repo root) before
+packaging.
 
 ## Tree-sitter editors (Neovim, Helix, Emacs)
 
@@ -57,6 +59,8 @@ cp editor-support/sublime/Mux.sublime-syntax \
 cp editor-support/sublime/Mux.sublime-syntax \
   ~/Library/Application\ Support/Sublime\ Text/Packages/User/
 ```
+
+On Windows the destination is `%APPDATA%\Sublime Text\Packages\User\`.
 
 Sublime picks up `.mux` files automatically once the syntax is installed.
 

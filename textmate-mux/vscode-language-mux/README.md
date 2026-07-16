@@ -16,8 +16,9 @@ Provides syntax highlighting and language configuration for Mux files (`.mux`) i
 The extension grammar is generated from `../../shared/syntax-matrix.json` via `../../scripts/generate-syntax.js`.
 
 ### Build and Package
+From the repo root:
 ```bash
-cd mux-syntax-highlighting/textmate-mux/vscode-language-mux
+cd textmate-mux/vscode-language-mux
 npx @vscode/vsce package          # produces language-mux-<version>.vsix
 ```
 
