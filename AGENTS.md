@@ -45,17 +45,24 @@ parity-check mechanism is planned follow-up (see muxlang/mux-context).
 compiler lexer). Both generators read it:
 - `generate-syntax.js` - the TextMate grammar.
 - `build-editor-support.js` - the editor-support configs (Sublime, JetBrains,
-  Helix/Neovim queries, vscode config). It adapts the matrix via `specFromMatrix()`.
+  vscode config). It adapts the matrix via `specFromMatrix()`.
 
 The old `editor-support/spec/definitions.json` was deleted (it had drifted - e.g.
 listed `ok`/`err` as keywords and `::`/`->` as operators, none of which are real
 Mux tokens). Both generators are now Node (the Python generator was ported).
 Optional future cleanup: emit the website Shiki grammar from here too.
 
-## Helix
+## Scope: TextMate family only
 
-`editor-support/helix/languages.toml` uses a GIT grammar source pointing at
-`muxlang/tree-sitter-mux` (NOT a local path - that would dangle).
+This repo owns the canonical spec plus the **regex-based** highlighters: VSCode,
+Sublime, JetBrains. Anything tree-sitter (Neovim, Helix, Emacs - grammar,
+queries, editor configs) belongs to `tree-sitter-mux`, which owns the parser
+those editors compile.
+
+The split is engine-shaped, not editor-shaped: a TextMate grammar knows what a
+token *is*, a tree-sitter grammar knows how tokens *nest*. Keeping the
+tree-sitter queries here meant maintaining a second, worse copy of them that
+drifted from the real grammar unnoticed.
 
 ## Development / CI
 
