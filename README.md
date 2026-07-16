@@ -1,17 +1,31 @@
+<div align="center">
+
+<img src="https://mux-lang.dev/img/mux-logo.png" alt="Mux Logo" width="120">
+
 # mux-syntax-highlighting
 
-TextMate-family syntax highlighting for the [Mux programming language](https://github.com/muxlang)
-- **VSCode, Sublime, JetBrains** - plus drop-in editor configs and the **canonical
-syntax spec**. Part of the multi-repo [muxlang](https://github.com/muxlang) ecosystem.
+**TextMate-family syntax highlighting and the canonical syntax spec for [Mux](https://github.com/muxlang)**
 
-Tree-sitter-based highlighting (Neovim, Helix, Emacs) lives in the separate
-[tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](LICENSE)
+[![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=muxlang_mux-syntax-highlighting&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=muxlang_mux-syntax-highlighting)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=muxlang_mux-syntax-highlighting&metric=coverage)](https://sonarcloud.io/summary/new_code?id=muxlang_mux-syntax-highlighting)
+
+</div>
+
+Syntax highlighting for VSCode, Sublime, and JetBrains - plus drop-in editor
+configs and the **canonical syntax spec** that every downstream highlighter is
+generated from. Tree-sitter-based highlighting (Neovim, Helix, Emacs) lives in the
+separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
+
+---
 
 ## Installation
 
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
 and the tree-sitter editors). Everything installs from source for now; a
 one-command install per editor is planned follow-up.
+
+---
 
 ## Structure
 
@@ -25,6 +39,8 @@ one-command install per editor is planned follow-up.
   - `check-parity.js` - verifies the TextMate grammar matches the spec.
   - `build-editor-support.js` - generates/validates the editor-support configs.
 
+---
+
 ## Development
 
 ```bash
@@ -35,6 +51,8 @@ node scripts/build-editor-support.js --check        # verify editor-support pari
 ```
 
 CI runs the two parity checks plus a SonarQube scan.
+
+---
 
 ## Consumers of syntax-matrix.json
 
@@ -66,13 +84,19 @@ single canonical spec - `shared/syntax-matrix.json` - read by both generators
 (`generate-syntax.js` for the TextMate grammar, `build-editor-support.js` for
 the editor-support configs).
 
+---
+
 ## Related repositories
 
-- [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) - tree-sitter grammar (Neovim/Helix/Emacs)
-- [mux-website](https://github.com/muxlang/mux-website) - docs site (third spec consumer)
-- [mux-compiler](https://github.com/muxlang/mux-compiler) - the language/compiler
-- [mux-context](https://github.com/muxlang/mux-context) - cross-repo architecture, design notes, glossary, releases
+| Repo | What it is |
+|------|------------|
+| [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) | Tree-sitter grammar (Neovim/Helix/Emacs) |
+| [mux-website](https://github.com/muxlang/mux-website) | Docs site (mux-lang.dev), third spec consumer (Shiki) |
+| [mux-compiler](https://github.com/muxlang/mux-compiler) | The language, compiler, and CLI |
+| [mux-context](https://github.com/muxlang/mux-context) | Cross-repo architecture, design rationale, glossary, releases |
+
+---
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) - Maintained by [Derek Corniello](https://github.com/DerekCorniello)
