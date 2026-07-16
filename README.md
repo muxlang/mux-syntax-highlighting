@@ -7,6 +7,12 @@ syntax spec**. Part of the multi-repo [muxlang](https://github.com/muxlang) ecos
 Tree-sitter-based highlighting (Neovim, Helix, Emacs) lives in the separate
 [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 
+## Installation
+
+See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
+and the tree-sitter editors). Everything installs from source for now; a
+one-command install per editor is planned follow-up.
+
 ## Structure
 
 - `shared/syntax-matrix.json` - the canonical syntax spec (single source of truth).
