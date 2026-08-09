@@ -87,8 +87,9 @@
     ]
   },
   "identifiers": {
-    "pattern": "[a-zA-Z][a-zA-Z0-9_]*",
-    "underscore": "_"
+    "pattern": "(?:[a-zA-Z][a-zA-Z0-9_]*|_[a-zA-Z0-9_]+)",
+    "underscore": "_",
+    "note": "A leading underscore needs at least one character after it, so a bare '_' stays the wildcard and unused-parameter marker rather than a name. The pattern is wrapped in a non-capturing group because consumers interpolate it between anchors."
   },
   "comments": {
     "line": { "token": "LineComment", "pattern": "//[^\n]*", "description": "single-line comment" },
