@@ -70,6 +70,15 @@ string
 auto none_val = none
 auto bool_val = true
 
+// Leading-underscore identifiers highlight as names; a bare '_' does not
+auto _unused = 1
+auto _123 = 2
+auto __ = 3
+
+func discard(int _, string kept) returns string {
+    return kept
+}
+
 class Factory {
     common func build() returns string {
         return "ready"
