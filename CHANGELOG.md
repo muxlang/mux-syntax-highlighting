@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **The validation sample contained code Mux does not accept.** It used a range
+  literal, `for i in 0..10`, in two ways the language rejects: the loop variable
+  needs a type, and there is no range literal syntax at all - the compiler
+  answers "Mux does not have range literal syntax" and points at `range(a, b)`.
+  A sample that does not parse cannot catch a highlighting regression, and this
+  one had been carrying the error long enough to be quoted as if it were valid.
+
+### Added
+- **The sample now exercises Mux 0.9.0 syntax**: slicing with every combination
+  of omitted bound (`xs[1:3]`, `xs[:2]`, `xs[2:]`, `xs[:]`, `xs[-2:]`), string
+  slicing and indexing, declarations with no initializer, a module-qualified
+  type in a type position, a trailing comma in a call, and an expression spanning
+  lines.
+
+  No token changes were needed for any of it - the colon, the dot and the
+  brackets are already in `syntax-matrix.json`, so the TextMate grammar was
+  already correct. What was missing was anything asserting so.
+
 ### Changed
 - **An identifier can begin with an underscore.** `identifiers.pattern` in the
   canonical spec is now `(?:[a-zA-Z][a-zA-Z0-9_]*|_[a-zA-Z0-9_]+)`, so `_x`,
