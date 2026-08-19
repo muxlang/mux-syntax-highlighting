@@ -28,7 +28,7 @@ if x > 40 {
     print("Low")
 }
 
-for i in 0..10 {
+for int i in range(0, 10) {
     print(i)
 }
 
@@ -88,6 +88,36 @@ class Factory {
 func stringify(User user) returns string {
     return user.to_string()
 }
+
+// Slicing: the colon inside brackets is a delimiter, not a map separator.
+// Either bound may be omitted, and a negative bound counts from the end.
+auto numbers = [10, 20, 30, 40]
+auto middle = numbers[1:3]
+auto head = numbers[:2]
+auto tail = numbers[2:]
+auto whole = numbers[:]
+auto last_two = numbers[-2:]
+
+// A string slices and indexes like a list of characters
+auto greeting = "hello"
+auto part = greeting[1:3]
+auto first = greeting[0]
+
+// A declaration with no initializer: type and name, nothing else
+string pending
+int counter
+
+// A module-qualified type in a type position, dotted like a path
+func count_nodes(graph.Graph<string> g) returns int {
+    return g.len()
+}
+
+// A trailing comma in a call argument list, and an expression across lines
+auto total = sum(
+    1,
+    2,
+    3,
+)
 
 // Comments
 /* multi-line
