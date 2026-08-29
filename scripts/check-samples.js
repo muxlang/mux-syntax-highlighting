@@ -30,9 +30,9 @@ function executableSource(source) {
 }
 
 function patternFor(term) {
-  if (!/^[A-Za-z0-9_]+$/.test(term)) {
-    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const adjacentOperator = '[!%&*+\\-./:<=>?^|~]';
+  if (!/^\w+$/.test(term)) {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const adjacentOperator = String.raw`[!%&*+\-./:<=>?^|~]`;
     return new RegExp(`(?<!${adjacentOperator})${escaped}(?!${adjacentOperator})`);
   }
   return new RegExp(`(?<![A-Za-z0-9_])${term}(?![A-Za-z0-9_])`);
@@ -63,12 +63,14 @@ const cases = [
   },
 ];
 
-const allKeywords = Object.values(matrix.keywords).flat();
-const allTypes = matrix.types.builtin;
-const allOperators = Object.values(matrix.operators)
-  .flat()
-  .map((item) => item.symbol);
-const allDelimiters = matrix.delimiters.map((item) => item.symbol);
+const allKeywords = new Set(Object.values(matrix.keywords).flat());
+const allTypes = new Set(matrix.types.builtin);
+const allOperators = new Set(
+  Object.values(matrix.operators)
+    .flat()
+    .map((item) => item.symbol),
+);
+const allDelimiters = new Set(matrix.delimiters.map((item) => item.symbol));
 
 for (const testCase of cases) {
   const source = readText(testCase.path);
@@ -83,16 +85,16 @@ for (const testCase of cases) {
   assertTokens(source, testCase.literals, `${testCase.path} literals`);
 
   for (const token of testCase.keywords) {
-    assert(allKeywords.includes(token), `Unknown keyword: ${token}`);
+    assert(allKeywords.has(token), `Unknown keyword: ${token}`);
   }
   for (const token of testCase.types) {
-    assert(allTypes.includes(token), `Unknown type: ${token}`);
+    assert(allTypes.has(token), `Unknown type: ${token}`);
   }
   for (const token of testCase.operators) {
-    assert(allOperators.includes(token), `Unknown operator: ${token}`);
+    assert(allOperators.has(token), `Unknown operator: ${token}`);
   }
   for (const token of testCase.delimiters) {
-    assert(allDelimiters.includes(token), `Unknown delimiter: ${token}`);
+    assert(allDelimiters.has(token), `Unknown delimiter: ${token}`);
   }
 }
 
