@@ -40,6 +40,8 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '20'
+      - name: JavaScript quality
+        run: npm ci --ignore-scripts && npm run lint && npm run format:check && npm run samples
       - name: TextMate grammar parity
         run: node scripts/check-parity.js
       - name: Editor-support config parity
