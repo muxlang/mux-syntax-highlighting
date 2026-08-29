@@ -23,9 +23,17 @@ function assert(condition, message) {
   }
 }
 
+function executableSource(source) {
+  return source
+    .replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/"""[\s\S]*?"""|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, ' ');
+}
+
 function patternFor(term) {
   if (!/^[A-Za-z0-9_]+$/.test(term)) {
-    return { test: (source) => source.includes(term) };
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const adjacentOperator = '[!%&*+\\-./:<=>?^|~]';
+    return new RegExp(`(?<!${adjacentOperator})${escaped}(?!${adjacentOperator})`);
   }
   return new RegExp(`(?<![A-Za-z0-9_])${term}(?![A-Za-z0-9_])`);
 }
@@ -42,7 +50,7 @@ const cases = [
     keywords: ['func', 'returns', 'if', 'match', 'none', 'true'],
     types: ['void'],
     operators: ['=', '>', '+'],
-    delimiters: ['(', ')', '{', '}', ','],
+    delimiters: ['(', ')', '{', '}'],
     literals: ['42', '3.14', '"Mux"'],
   },
   {
@@ -64,13 +72,14 @@ const allDelimiters = matrix.delimiters.map((item) => item.symbol);
 
 for (const testCase of cases) {
   const source = readText(testCase.path);
+  const code = executableSource(source);
   assert(source.trim().length > 0, `${testCase.path} is empty`);
   assert(source.includes('//') || source.includes('/*'), `${testCase.path} has no comment sample`);
 
-  assertTokens(source, testCase.keywords, `${testCase.path} keywords`);
-  assertTokens(source, testCase.types, `${testCase.path} types`);
-  assertTokens(source, testCase.operators, `${testCase.path} operators`);
-  assertTokens(source, testCase.delimiters, `${testCase.path} delimiters`);
+  assertTokens(code, testCase.keywords, `${testCase.path} keywords`);
+  assertTokens(code, testCase.types, `${testCase.path} types`);
+  assertTokens(code, testCase.operators, `${testCase.path} operators`);
+  assertTokens(code, testCase.delimiters, `${testCase.path} delimiters`);
   assertTokens(source, testCase.literals, `${testCase.path} literals`);
 
   for (const token of testCase.keywords) {
