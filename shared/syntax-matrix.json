@@ -77,7 +77,7 @@
       "single_line": { "token": "Str", "pattern": "\"(\\\\.|[^\"\\\\])*\"", "description": "double-quoted string" },
       "multi_line": { "pattern": "\"\"\"(\\\\.|[^\"\\\\]|\\n)*\"\"\"", "description": "triple-quoted string" }
     },
-    "bytes": { "token": "Bytes", "pattern": "b\"(\\\\.|[^\"\\\\])*\"", "description": "byte sequence literal" },
+    "bytes": { "token": "Bytes", "pattern": "(?<![A-Za-z0-9_])b\"(\\\\.|[^\"\\\\])*\"", "description": "byte sequence literal" },
     "underscore": { "token": "Underscore", "symbol": "_", "description": "wildcard in match patterns" }
   },
   "types": {

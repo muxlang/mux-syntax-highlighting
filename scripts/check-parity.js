@@ -51,6 +51,13 @@ function assertContainsAll(haystack, needles, label) {
   assert(missing.length === 0, `${label} missing: ${missing.join(', ')}`);
 }
 
+function assertBuiltinTypes(grammar, types) {
+  const typePattern = grammar.repository.types.patterns.find(pattern => pattern.name === 'storage.type.mux');
+  assert(typePattern?.match, 'TextMate built-in type rule is missing');
+  const missing = types.filter(type => !typePattern.match.includes(type));
+  assert(missing.length === 0, `TextMate built-in types missing: ${missing.join(', ')}`);
+}
+
 const matrix = readJson('shared/syntax-matrix.json');
 // Regenerate the TextMate grammar from the canonical spec. (The tree-sitter
 // grammar + highlights now live in the tree-sitter-mux repo; their parity is
@@ -82,7 +89,7 @@ const expectedDelimiters = matrix.delimiters.map(item => item.symbol);
 assertContainsAll(normalizedTextmate, expectedKeywords, 'TextMate keywords');
 assertContainsAll(normalizedTextmate, expectedOperators, 'TextMate operators');
 assertContainsAll(normalizedTextmate, expectedDelimiters, 'TextMate delimiters');
-assertContainsAll(normalizedTextmate, matrix.types.builtin, 'TextMate built-in types');
+assertBuiltinTypes(textmateCanonical, matrix.types.builtin);
 
 assertContainsAll(
   normalizedTextmate,
