@@ -45,9 +45,9 @@ function textmateGrammar() {
       { include: '#comments' },
       { include: '#literals' },
       { include: '#declarations' },
+      { include: '#keywords' },
       { include: '#calls' },
       { include: '#types' },
-      { include: '#keywords' },
       { include: '#operators' },
       { include: '#delimiters' },
       { include: '#identifiers' },
@@ -132,6 +132,10 @@ function textmateGrammar() {
           {
             name: 'constant.numeric.integer.mux',
             match: matrix.literals.integer.pattern,
+          },
+          {
+            name: 'string.quoted.bytes.mux',
+            match: matrix.literals.bytes.pattern,
           },
           {
             name: 'string.quoted.single.mux',

@@ -61,6 +61,7 @@ function specFromMatrix(matrix) {
     regex: {
       identifier: String.raw`\b[_A-Za-z][_A-Za-z0-9]*\b`,
       number: `(?:${matrix.literals.float.pattern}|${matrix.literals.integer.pattern})`,
+      bytes: matrix.literals.bytes.pattern,
     },
   };
 }
@@ -123,6 +124,10 @@ function buildTextmate(spec) {
       },
       strings: {
         patterns: [
+          {
+            name: 'string.quoted.bytes.mux',
+            match: spec.regex.bytes,
+          },
           {
             name: 'string.quoted.double.mux',
             begin: '"',
@@ -205,6 +210,8 @@ function buildSublimeSyntax(spec) {
     '          scope: punctuation.definition.comment.end.mux',
     POP_TRUE_LINE,
     '  strings:',
+    `    - match: '${spec.regex.bytes}'`,
+    '      scope: string.quoted.bytes.mux',
     '    - match: \'"\'',
     '      scope: punctuation.definition.string.begin.mux',
     PUSH_LINE,

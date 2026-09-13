@@ -48,6 +48,10 @@
     "strings": {
       "patterns": [
         {
+          "name": "string.quoted.bytes.mux",
+          "match": "b\"(\\\\.|[^\"\\\\])*\""
+        },
+        {
           "name": "string.quoted.double.mux",
           "begin": "\"",
           "end": "\"",
@@ -83,7 +87,7 @@
       "patterns": [
         {
           "name": "keyword.control.mux",
-          "match": "\\b(?:if|else|for|while|match|break|continue|auto|func|returns|return|const|class|interface|enum|import|common|where|is|as|in)\\b"
+          "match": "\\b(?:if|else|for|while|match|break|continue|use|auto|func|returns|return|const|class|interface|enum|import|common|where|is|as|in)\\b"
         },
         {
           "name": "constant.language.mux",
@@ -95,7 +99,7 @@
       "patterns": [
         {
           "name": "storage.type.builtin.mux",
-          "match": "\\b(?:string|bool|void|int|float|char|optional|result|list|map|tuple|set|range|Stringable|Hashable|Thread|Error|Self)\\b"
+          "match": "\\b(?:string|bool|void|int|float|char|byte|bytes|optional|result|list|map|tuple|set|range|Stringable|Hashable|Thread|Error|Self)\\b"
         }
       ]
     },

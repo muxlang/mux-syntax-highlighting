@@ -82,6 +82,7 @@ const expectedDelimiters = matrix.delimiters.map(item => item.symbol);
 assertContainsAll(normalizedTextmate, expectedKeywords, 'TextMate keywords');
 assertContainsAll(normalizedTextmate, expectedOperators, 'TextMate operators');
 assertContainsAll(normalizedTextmate, expectedDelimiters, 'TextMate delimiters');
+assertContainsAll(normalizedTextmate, matrix.types.builtin, 'TextMate built-in types');
 
 assertContainsAll(
   normalizedTextmate,
@@ -90,6 +91,7 @@ assertContainsAll(
     'comment.block.mux',
     'string.quoted.single.mux',
     'string.quoted.double.mux',
+    'string.quoted.bytes.mux',
     'string.quoted.triple.double.mux',
     'variable.language.mux',
     'variable.other.mux',
