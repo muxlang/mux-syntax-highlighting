@@ -49,7 +49,7 @@
       "patterns": [
         {
           "name": "string.quoted.bytes.mux",
-          "match": "(?<![A-Za-z0-9_])b\"(\\\\.|[^\"\\\\])*\""
+          "match": "\\bb\"(\\\\.|[^\"\\\\])*\""
         },
         {
           "name": "string.quoted.double.mux",
