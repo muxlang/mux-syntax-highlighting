@@ -24,7 +24,7 @@ contexts:
           scope: punctuation.definition.comment.end.mux
           pop: true
   strings:
-    - match: 'b"(\\.|[^"\\])*"'
+    - match: '(?<![A-Za-z0-9_])b"(\\.|[^"\\])*"'
       scope: string.quoted.bytes.mux
     - match: '"'
       scope: punctuation.definition.string.begin.mux
