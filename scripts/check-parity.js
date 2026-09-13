@@ -54,7 +54,8 @@ function assertContainsAll(haystack, needles, label) {
 function assertBuiltinTypes(grammar, types) {
   const typePattern = grammar.repository.types.patterns.find(pattern => pattern.name === 'storage.type.mux');
   assert(typePattern?.match, 'TextMate built-in type rule is missing');
-  const missing = types.filter(type => !typePattern.match.includes(type));
+  const exactTypes = new RegExp(typePattern.match);
+  const missing = types.filter(type => !exactTypes.test(type));
   assert(missing.length === 0, `TextMate built-in types missing: ${missing.join(', ')}`);
 }
 

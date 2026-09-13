@@ -71,10 +71,15 @@ checklist and update every consumer:
       VSCode package copy) and the `editor-support/` configs. Regenerate with
       `generate-syntax.js` / `build-editor-support.js`; verified in CI by
       `scripts/check-parity.js` and `build-editor-support.js --check`.
-- [ ] `tree-sitter-mux` - vendors a copy of `syntax-matrix.json` at its repo root
+- [x] `tree-sitter-mux` - vendors a copy of `syntax-matrix.json` at its repo root
       (`grammar.js` reads it, `queries/highlights.scm` is generated from it).
-- [ ] `mux-website` - hand-maintained Monaco (`src/monaco/muxLanguage.ts`) and
+- [x] `mux-website` - hand-maintained Monaco (`src/monaco/muxLanguage.ts`) and
       Shiki (`src/shiki/mux.json`) definitions.
+
+For the coordinated stdlib update, downstream parity is verified by tree-sitter-mux
+PR [#31](https://github.com/muxlang/tree-sitter-mux/pull/31) and mux-website PR
+[#98](https://github.com/muxlang/mux-website/pull/98), whose branch checks consume
+this branch before either change is merged.
 
 The `tree-sitter-mux` and `mux-website` consumers have their own drift checks
 tracked in their own repos, but a spec change here must still be propagated to
