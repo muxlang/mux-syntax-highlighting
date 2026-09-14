@@ -55,11 +55,11 @@ const cases = [
   },
   {
     path: 'shared/samples/validation.mux',
-    keywords: ['auto', 'class', 'interface', 'enum', 'for', 'while', 'return', 'in', 'none'],
-    types: ['int', 'string', 'result'],
+    keywords: ['auto', 'class', 'interface', 'enum', 'for', 'while', 'return', 'in', 'none', 'use'],
+    types: ['int', 'string', 'result', 'byte', 'bytes'],
     operators: ['=', '-=', '**', '==', '&&', '||', '!', '&', '.', '<', '>'],
     delimiters: ['[', ']', ','],
-    literals: ['1_000', '3.14e-2', "'a'", '"hello"', '"""'],
+    literals: ['1_000', '3.14e-2', "'a'", '"hello"', 'b"Mux"', '"""'],
   },
 ];
 

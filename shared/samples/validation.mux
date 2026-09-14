@@ -4,6 +4,14 @@ func add(int a, int b) returns int {
     return a + b
 }
 
+func increment(result<int, string> input) returns result<int, string> {
+    auto value = use (input)
+    return ok(value + 1)
+}
+
+byte octet = 42
+bytes payload = b"Mux"
+
 class User {
     string name
 

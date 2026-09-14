@@ -4,7 +4,7 @@
   "file_extensions": [".mux"],
   "keywords": {
     "control": [
-      "if", "else", "for", "while", "match", "break", "continue"
+      "if", "else", "for", "while", "match", "break", "continue", "use"
     ],
     "declaration": [
       "auto", "func", "returns", "return", "const", "class", "interface",
@@ -16,7 +16,7 @@
     "reserved": [
       "auto", "func", "returns", "return", "if", "else", "for", "while",
       "match", "const", "class", "interface", "enum", "import", "is",
-      "as", "in", "break", "continue", "none", "common", "where"
+      "as", "in", "break", "continue", "none", "common", "where", "use"
     ],
     "note": "none is a tokenized keyword; some/ok/err are enum variant identifiers, not keywords"
   },
@@ -74,14 +74,15 @@
     "boolean": { "token": "Bool", "values": ["true", "false"] },
     "char": { "token": "Char", "pattern": "'(\\\\.|[^'\\\\])'", "description": "single character" },
     "string": {
-      "single_line": { "token": "Str", "pattern": "\"(\\\\.|[^\"\\\\])*\"", "description": "single-quoted string" },
+      "single_line": { "token": "Str", "pattern": "\"(\\\\.|[^\"\\\\])*\"", "description": "double-quoted string" },
       "multi_line": { "pattern": "\"\"\"(\\\\.|[^\"\\\\]|\\n)*\"\"\"", "description": "triple-quoted string" }
     },
+    "bytes": { "token": "Bytes", "pattern": "\\bb\"(\\\\.|[^\"\\\\])*\"", "description": "byte sequence literal" },
     "underscore": { "token": "Underscore", "symbol": "_", "description": "wildcard in match patterns" }
   },
   "types": {
     "builtin": [
-      "string", "bool", "void", "int", "float", "char", "optional", "result",
+      "string", "bool", "void", "int", "float", "char", "byte", "bytes", "optional", "result",
       "list", "map", "tuple", "set", "range", "Stringable", "Hashable",
       "Thread", "Error", "Self"
     ]
@@ -99,6 +100,7 @@
     "generics": { "description": "Enclosed in <>, e.g. result<int, string>", "note": "Uses Lt/Gt tokens, context-dependent" },
     "match_arms": { "description": "Pattern followed by {} block, no arrow token" },
     "enum_variants": { "description": "some/ok/err are user-facing variant identifiers, not keywords" },
-    "references": { "description": "Prefix & for references, e.g. &T" }
+    "references": { "description": "Prefix & for references, e.g. &T" },
+    "propagation": { "description": "Prefix use extracts an ok/some payload or returns err/none from the enclosing function; binds at unary precedence" }
   }
 }
