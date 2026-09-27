@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Record the binary-operator trailing-newline rule in the canonical syntax matrix.
+- Record the binary-operator trailing-newline rule and checked valid and invalid examples in the canonical syntax matrix.
 
 ## [0.6.0] - 2026-08-20
 

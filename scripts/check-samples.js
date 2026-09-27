@@ -63,6 +63,15 @@ const cases = [
   },
 ];
 
+const continuation = matrix.line_continuation;
+assert(continuation.binary_operator_position === 'trailing', 'Binary operators must trail continued lines');
+assert(continuation.newline_after_binary_operator === true, 'Newlines after binary operators must be supported');
+assert(continuation.leading_binary_operator === false, 'Leading binary operators must be rejected');
+assert(continuation.assignment_operator_continuation === false, 'Assignment continuation must be rejected');
+assert(continuation.examples.valid_trailing_operator.includes('+\n'), 'Valid trailing-operator example is missing');
+assert(continuation.examples.invalid_leading_operator.includes('\n    +'), 'Invalid leading-operator example is missing');
+assert(continuation.examples.invalid_assignment_continuation.includes('=\n'), 'Invalid assignment-continuation example is missing');
+
 const allKeywords = new Set(Object.values(matrix.keywords).flat());
 const allTypes = new Set(matrix.types.builtin);
 const allOperators = new Set(

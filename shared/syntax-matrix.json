@@ -62,7 +62,12 @@
     "binary_operator_position": "trailing",
     "newline_after_binary_operator": true,
     "leading_binary_operator": false,
-    "assignment_operator_continuation": false
+    "assignment_operator_continuation": false,
+    "examples": {
+      "valid_trailing_operator": "auto total = left +\n    right",
+      "invalid_leading_operator": "auto total = left\n    + right",
+      "invalid_assignment_continuation": "auto total =\n    right"
+    }
   },
   "delimiters": [
     { "token": "OpenParen", "symbol": "(", "description": "open parenthesis" },
