@@ -58,6 +58,12 @@
       { "token": "DotDot", "symbol": "..", "description": "rest pattern" }
     ]
   },
+  "line_continuation": {
+    "binary_operator_position": "trailing",
+    "newline_after_binary_operator": true,
+    "leading_binary_operator": false,
+    "assignment_operator_continuation": false
+  },
   "delimiters": [
     { "token": "OpenParen", "symbol": "(", "description": "open parenthesis" },
     { "token": "CloseParen", "symbol": ")", "description": "close parenthesis" },
