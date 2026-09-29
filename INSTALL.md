@@ -1,10 +1,9 @@
 # Installing Mux syntax highlighting
 
-Manual setup for each supported editor. Nothing is published to a marketplace or
-registry yet, so every editor below installs from this repo. A one-command
-install per editor (VSCode Marketplace / OpenVSX, the nvim-treesitter registry,
-and Helix upstream, bundled with the forthcoming LSP) is planned follow-up,
-tracked in [muxlang/mux-context](https://github.com/muxlang/mux-context).
+Manual setup for each supported editor. VSCode installs from this repository's
+packaged extension; Neovim and Helix use the tree-sitter grammar and their own
+LSP configuration. Check the linked editor repositories for current upstream
+distribution status.
 
 | Editor | Engine | Section |
 | --- | --- | --- |
@@ -15,17 +14,19 @@ tracked in [muxlang/mux-context](https://github.com/muxlang/mux-context).
 
 ## VSCode
 
-The VSCode extension lives in `textmate-mux/vscode-language-mux/`. The TextMate
-grammar it ships is generated from `shared/syntax-matrix.json` and is **not**
-committed, so generate it before packaging or the extension installs without any
-highlighting. From the repo root:
+The maintained VSCode extension is `mux-lang.language-mux` in
+`textmate-mux/vscode-language-mux/`. To install a local VSIX from a clean clone,
+run these commands from the repository root:
 
 ```bash
-node scripts/generate-syntax.js   # writes the grammar; required on a fresh clone
-cd textmate-mux/vscode-language-mux
-npx @vscode/vsce package          # produces language-mux-<version>.vsix
-code --install-extension language-mux-*.vsix
+npm ci
+npm run package:vscode           # generates the grammar and creates dist/language-mux.vsix
+code --install-extension dist/language-mux.vsix
 ```
+
+If you previously installed the duplicate `mux-lang.mux-syntax` extension,
+remove it with `code --uninstall-extension mux-lang.mux-syntax` before
+installing `mux-lang.language-mux`.
 
 Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any
 `.mux` file. Colors come from your active VSCode theme, not the grammar.

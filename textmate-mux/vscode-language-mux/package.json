@@ -6,14 +6,18 @@
   "publisher": "mux-lang",
   "license": "MIT",
   "icon": "./mux-icon.png",
+  "main": "extension.bundle.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxlang/mux-syntax-highlighting.git",
     "directory": "textmate-mux/vscode-language-mux"
   },
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.82.0"
   },
+  "activationEvents": [
+    "onLanguage:mux"
+  ],
   "categories": [
     "Programming Languages"
   ],
@@ -37,6 +41,20 @@
         "scopeName": "source.mux",
         "path": "./source.mux.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Mux",
+      "properties": {
+        "mux.serverPath": {
+          "type": "string",
+          "default": "mux",
+          "scope": "machine",
+          "description": "Path to the Mux compiler executable. Restart VSCode after changing this setting."
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   }
 }

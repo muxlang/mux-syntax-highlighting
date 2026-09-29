@@ -22,8 +22,8 @@ separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 ## Installation
 
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
-and the tree-sitter editors). Everything installs from source for now; a
-one-command install per editor is planned follow-up.
+and the tree-sitter editors). VSCode can be packaged as a local VSIX with one
+command; marketplace and upstream tree-sitter distribution are tracked follow-up.
 
 ---
 
@@ -32,8 +32,9 @@ one-command install per editor is planned follow-up.
 - `shared/syntax-matrix.json` - the canonical syntax spec (single source of truth).
 - `textmate-mux/` - TextMate grammar (generated from the spec).
   `vscode-language-mux/` is the VSCode extension package.
-- `editor-support/` - drop-in configs for Sublime, JetBrains, and VSCode,
-  generated from the spec. Tree-sitter editors (Neovim, Helix, Emacs) are
+- `editor-support/` - generated TextMate bundles for JetBrains and Sublime.
+  VSCode uses the package under `textmate-mux/vscode-language-mux/`.
+  Tree-sitter editors (Neovim, Helix, Emacs) are
   configured from [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux),
   which owns the grammar they use.
 - `scripts/` -
@@ -50,6 +51,7 @@ node scripts/generate-syntax.js                     # regenerate the TextMate gr
 node scripts/check-parity.js                        # verify TextMate parity (CI)
 node scripts/build-editor-support.js                # regenerate editor-support configs
 node scripts/build-editor-support.js --check        # verify editor-support parity (CI)
+npm ci && npm run package:vscode                   # create dist/language-mux.vsix
 ```
 
 CI runs the two parity checks plus a SonarQube scan.

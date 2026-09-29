@@ -46,6 +46,14 @@ jobs:
         run: node scripts/check-parity.js
       - name: Editor-support config parity
         run: node scripts/build-editor-support.js --check
+      - name: Build and verify VSCode package
+        run: npm run package:vscode && npm run verify:vscode-package
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mux-vscode-extension
+          path: dist/language-mux.vsix
+          if-no-files-found: error
 
   sonarqube:
     name: SonarQube
