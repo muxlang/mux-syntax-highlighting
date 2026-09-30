@@ -95,12 +95,7 @@ jobs:
 
           mkdir -p dist
           if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
-            gh release download "$RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --pattern language-mux.vsix \
-              --pattern language-mux.vsix.sha256 \
-              --pattern language-mux.build.json \
-              --dir dist
+            download_release_assets
           elif [[ "$has_vsix" == false && "$has_digest" == false && "$has_build_info" == false ]]; then
             npm run package:vscode
             npm run verify:vscode-package
