@@ -1,9 +1,10 @@
 # Installing Mux syntax highlighting
 
-Manual setup for each supported editor. VSCode installs from this repository's
-packaged extension; Neovim and Helix use the tree-sitter grammar and their own
-LSP configuration. Check the linked editor repositories for current upstream
-distribution status.
+Manual setup for each supported editor. The maintained VSCode extension is
+packaged here, but its Marketplace and Open VSX listings are not available yet;
+install a local VSIX as described below. Neovim and Helix use the Tree-sitter
+grammar and their own LSP configuration. Check the linked editor repositories
+for current upstream distribution status.
 
 | Editor | Engine | Section |
 | --- | --- | --- |
@@ -40,9 +41,9 @@ Parser-based editors use the grammar in
 [INTEGRATION.md](https://github.com/muxlang/tree-sitter-mux/blob/main/INTEGRATION.md)
 for copy-pasteable Neovim (nvim-treesitter), Helix, and Emacs setup.
 
-That repo does not commit the generated parser, so each editor regenerates it
-from `grammar.js` at install time; the tree-sitter CLI
-(`npm install -g tree-sitter-cli@0.26.8`) is a prerequisite.
+That repo commits the generated parser, so users do not need the Tree-sitter
+CLI to install it. Until its upstream editor integrations are released, follow
+the manual setup instructions linked above.
 
 The generated highlight queries and drop-in editor configs in this repo's
 `editor-support/` directory (`neovim/`, `helix/`) mirror what `tree-sitter-mux`
