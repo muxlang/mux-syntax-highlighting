@@ -18,6 +18,10 @@ on:
           - open-vsx
           - both
 
+concurrency:
+  group: vscode-publish-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -54,33 +58,59 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --draft \
               --title "Mux VSCode extension $RELEASE_TAG" \
-              --notes "Verified VSIX artifact for $RELEASE_TAG."
+              --notes "Verified VSIX artifact for $RELEASE_TAG." \
+              || gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
           fi
 
           has_vsix=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.vsix")')
           has_digest=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.vsix.sha256")')
+          has_build_info=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.build.json")')
 
           mkdir -p dist
-          if [[ "$has_vsix" == true && "$has_digest" == true ]]; then
+          if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
             gh release download "$RELEASE_TAG" \
               --repo "$GITHUB_REPOSITORY" \
               --pattern language-mux.vsix \
               --pattern language-mux.vsix.sha256 \
+              --pattern language-mux.build.json \
               --dir dist
-          elif [[ "$has_vsix" == false && "$has_digest" == false ]]; then
+          elif [[ "$has_vsix" == false && "$has_digest" == false && "$has_build_info" == false ]]; then
             npm run package:vscode
             npm run verify:vscode-package
+            actual_digest=$(sha256sum dist/language-mux.vsix | cut -d ' ' -f 1)
             (cd dist && sha256sum language-mux.vsix > language-mux.vsix.sha256)
+            source_commit=$(git rev-parse "$RELEASE_TAG^{commit}")
+            version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
+            jq -n \
+              --arg repository "$GITHUB_REPOSITORY" \
+              --arg release_tag "$RELEASE_TAG" \
+              --arg source_commit "$source_commit" \
+              --arg version "$version" \
+              --arg sha256 "$actual_digest" \
+              '{repository: $repository, release_tag: $release_tag, source_commit: $source_commit, version: $version, sha256: $sha256}' \
+              > dist/language-mux.build.json
             gh release upload "$RELEASE_TAG" \
               --repo "$GITHUB_REPOSITORY" \
               dist/language-mux.vsix \
-              dist/language-mux.vsix.sha256
+              dist/language-mux.vsix.sha256 \
+              dist/language-mux.build.json
           else
-            echo "Release $RELEASE_TAG has only one of the VSIX and digest assets." >&2
+            echo "Release $RELEASE_TAG has an incomplete or untrusted VSIX asset set." >&2
             exit 1
           fi
 
           (cd dist && sha256sum --check language-mux.vsix.sha256)
+          actual_digest=$(sha256sum dist/language-mux.vsix | cut -d ' ' -f 1)
+          source_commit=$(git rev-parse "$RELEASE_TAG^{commit}")
+          version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
+          jq -e \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg release_tag "$RELEASE_TAG" \
+            --arg source_commit "$source_commit" \
+            --arg version "$version" \
+            --arg sha256 "$actual_digest" \
+            '.repository == $repository and .release_tag == $release_tag and .source_commit == $source_commit and .version == $version and .sha256 == $sha256' \
+            dist/language-mux.build.json >/dev/null
           npm run verify:vscode-package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

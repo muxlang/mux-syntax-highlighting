@@ -1,11 +1,12 @@
 # Releasing the VSCode extension
 
 The VSCode package is published from a version tag by the `Publish VSCode
-extension` workflow. The workflow stores the verified VSIX and its SHA-256
-digest on a GitHub Release for that tag, creating a draft release when one does
-not exist. Later runs for the same tag reuse and verify those exact assets, so
-a registry retry cannot rebuild different bytes. Ordinary CI runs never
-publish.
+extension` workflow. The workflow stores the verified VSIX, SHA-256 digest,
+and tag/source/version metadata on a GitHub Release for that tag, creating a
+draft release when one does not exist. Later runs for the same tag verify that
+metadata and reuse the exact assets, so a registry retry cannot rebuild
+different bytes. Unverified or partial assets fail closed. Ordinary CI runs
+never publish.
 
 ## One-time setup
 
@@ -47,6 +48,6 @@ aligned with the federated credentials and trusted-publisher settings.
    the digest of the durable VSIX before upload. To retry a failed destination,
    run the workflow again for the same tag and choose only that destination.
 
-Each run also uploads the VSIX as a workflow artifact for 30 days. The draft
-release assets remain available for later retries. To install locally, use
+Each run also uploads the VSIX as a workflow artifact for 30 days. The release
+assets remain available for later retries. To install locally, use
 `code --install-extension language-mux.vsix`.
