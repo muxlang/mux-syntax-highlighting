@@ -7,45 +7,77 @@ const yauzl = require('yauzl');
 
 const archive = path.resolve(__dirname, '..', 'dist', 'language-mux.vsix');
 
-function readVsix(file) {
+function openZip(file) {
   return new Promise((resolve, reject) => {
-    yauzl.open(file, { lazyEntries: true }, (openError, zipFile) => {
-      if (openError) {
-        reject(openError);
+    yauzl.open(file, { lazyEntries: true }, (error, zipFile) => {
+      if (error) reject(error);
+      else resolve(zipFile);
+    });
+  });
+}
+
+function nextEntry(zipFile) {
+  return new Promise((resolve, reject) => {
+    const finish = (result) => {
+      zipFile.off('entry', onEntry);
+      zipFile.off('end', onEnd);
+      zipFile.off('error', onError);
+      resolve(result);
+    };
+    const onEntry = (entry) => finish(entry);
+    const onEnd = () => finish(null);
+    const onError = (error) => {
+      zipFile.off('entry', onEntry);
+      zipFile.off('end', onEnd);
+      zipFile.off('error', onError);
+      reject(error);
+    };
+
+    zipFile.once('entry', onEntry);
+    zipFile.once('end', onEnd);
+    zipFile.once('error', onError);
+    zipFile.readEntry();
+  });
+}
+
+function readEntry(zipFile, entry) {
+  return new Promise((resolve, reject) => {
+    zipFile.openReadStream(entry, (error, stream) => {
+      if (error) {
+        reject(error);
         return;
       }
 
-      const files = new Set();
-      let manifest;
-
-      zipFile.on('error', reject);
-      zipFile.on('end', () => resolve({ files, manifest }));
-      zipFile.on('entry', (entry) => {
-        files.add(entry.fileName);
-        if (entry.fileName !== 'extension/package.json') {
-          zipFile.readEntry();
-          return;
-        }
-
-        zipFile.openReadStream(entry, (streamError, stream) => {
-          if (streamError) {
-            reject(streamError);
-            return;
-          }
-
-          const chunks = [];
-          stream.on('error', reject);
-          stream.on('data', (chunk) => chunks.push(chunk));
-          stream.on('end', () => {
-            manifest = Buffer.concat(chunks).toString('utf8');
-            zipFile.readEntry();
-          });
-        });
-      });
-
-      zipFile.readEntry();
+      const chunks = [];
+      const onData = (chunk) => chunks.push(chunk);
+      const onError = (streamError) => reject(streamError);
+      const onEnd = () => resolve(Buffer.concat(chunks).toString('utf8'));
+      stream.on('data', onData);
+      stream.once('error', onError);
+      stream.once('end', onEnd);
     });
   });
+}
+
+async function readVsix(file) {
+  const zipFile = await openZip(file);
+  const files = new Set();
+  let manifest;
+
+  try {
+    let entry = await nextEntry(zipFile);
+    while (entry) {
+      files.add(entry.fileName);
+      if (entry.fileName === 'extension/package.json') {
+        manifest = await readEntry(zipFile, entry);
+      }
+      entry = await nextEntry(zipFile);
+    }
+  } finally {
+    zipFile.close();
+  }
+
+  return { files, manifest };
 }
 
 async function verify() {
