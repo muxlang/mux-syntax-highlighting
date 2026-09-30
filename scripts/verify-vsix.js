@@ -104,6 +104,7 @@ async function verify() {
     'extension/mux-icon.png',
     'extension/LICENSE.txt',
     'extension/readme.md',
+    'extension/changelog.md',
     'extension/extension.bundle.js',
   ];
   const missing = required.filter((file) => !files.has(file));
