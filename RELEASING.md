@@ -51,3 +51,11 @@ aligned with the federated credentials and trusted-publisher settings.
 Each run also uploads the VSIX as a workflow artifact for 30 days. The release
 assets remain available for later retries. To install locally, use
 `code --install-extension language-mux.vsix`.
+
+If a release already has the VSIX and checksum but no build metadata, the
+workflow stops rather than trusting that package. Remove those two assets with
+`gh release delete-asset <tag> language-mux.vsix` and
+`gh release delete-asset <tag> language-mux.vsix.sha256`, then run with
+destination `none` to build and inspect a verified package.
+If the recorded build metadata does not match the tag, remove the VSIX, digest,
+and build metadata assets before rebuilding with destination `none`.

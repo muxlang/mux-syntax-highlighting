@@ -18,10 +18,6 @@ on:
           - open-vsx
           - both
 
-concurrency:
-  group: vscode-publish-${{ inputs.release_tag }}
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
@@ -53,6 +49,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
+          set -euo pipefail
+
           if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$RELEASE_TAG" \
               --repo "$GITHUB_REPOSITORY" \
@@ -62,9 +60,15 @@ jobs:
               || gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
           fi
 
-          has_vsix=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.vsix")')
-          has_digest=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.vsix.sha256")')
-          has_build_info=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.build.json")')
+          read_release_asset_state() {
+            local asset_names
+            asset_names=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '[.assets[].name]')
+            has_vsix=$(jq -r 'index("language-mux.vsix") != null' <<< "$asset_names")
+            has_digest=$(jq -r 'index("language-mux.vsix.sha256") != null' <<< "$asset_names")
+            has_build_info=$(jq -r 'index("language-mux.build.json") != null' <<< "$asset_names")
+          }
+
+          read_release_asset_state
 
           mkdir -p dist
           if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
@@ -89,28 +93,85 @@ jobs:
               --arg sha256 "$actual_digest" \
               '{repository: $repository, release_tag: $release_tag, source_commit: $source_commit, version: $version, sha256: $sha256}' \
               > dist/language-mux.build.json
-            gh release upload "$RELEASE_TAG" \
+            if ! gh release upload "$RELEASE_TAG" \
               --repo "$GITHUB_REPOSITORY" \
               dist/language-mux.vsix \
               dist/language-mux.vsix.sha256 \
-              dist/language-mux.build.json
+              dist/language-mux.build.json; then
+              echo "Another run may have uploaded the release assets; waiting for its complete asset set."
+              uploaded=false
+              attempt=0
+              while [[ "$attempt" -lt 12 ]]; do
+                attempt=$((attempt + 1))
+                sleep 5
+                read_release_asset_state
+                if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
+                  rm -f dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json
+                  if gh release download "$RELEASE_TAG" \
+                    --repo "$GITHUB_REPOSITORY" \
+                    --pattern language-mux.vsix \
+                    --pattern language-mux.vsix.sha256 \
+                    --pattern language-mux.build.json \
+                    --dir dist; then
+                    uploaded=true
+                    break
+                  fi
+                fi
+              done
+              if [[ "$uploaded" != true ]]; then
+                echo "No complete, downloadable VSIX asset set appeared for $RELEASE_TAG." >&2
+                exit 1
+              fi
+            fi
           else
-            echo "Release $RELEASE_TAG has an incomplete or untrusted VSIX asset set." >&2
-            exit 1
+              echo "Release $RELEASE_TAG has a partial VSIX asset set. Waiting for another package job to finish." >&2
+              downloaded=false
+              attempt=0
+              while [[ "$attempt" -lt 12 ]]; do
+                attempt=$((attempt + 1))
+                sleep 5
+                read_release_asset_state
+              if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
+                rm -f dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json
+                if gh release download "$RELEASE_TAG" \
+                  --repo "$GITHUB_REPOSITORY" \
+                  --pattern language-mux.vsix \
+                  --pattern language-mux.vsix.sha256 \
+                  --pattern language-mux.build.json \
+                  --dir dist; then
+                  downloaded=true
+                  break
+                fi
+              fi
+            done
+            if [[ "$downloaded" != true ]]; then
+              read_release_asset_state
+              if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == false ]]; then
+                echo "Release $RELEASE_TAG has legacy VSIX assets without source metadata." >&2
+                echo "Remove language-mux.vsix and language-mux.vsix.sha256, then rerun with destination 'none' to build a verified release asset." >&2
+              else
+                echo "No complete VSIX asset set appeared for $RELEASE_TAG." >&2
+              fi
+              exit 1
+            fi
           fi
 
           (cd dist && sha256sum --check language-mux.vsix.sha256)
           actual_digest=$(sha256sum dist/language-mux.vsix | cut -d ' ' -f 1)
           source_commit=$(git rev-parse "$RELEASE_TAG^{commit}")
           version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
-          jq -e \
+          if ! jq -e \
             --arg repository "$GITHUB_REPOSITORY" \
             --arg release_tag "$RELEASE_TAG" \
             --arg source_commit "$source_commit" \
             --arg version "$version" \
             --arg sha256 "$actual_digest" \
             '.repository == $repository and .release_tag == $release_tag and .source_commit == $source_commit and .version == $version and .sha256 == $sha256' \
-            dist/language-mux.build.json >/dev/null
+            dist/language-mux.build.json >/dev/null; then
+            echo "Release $RELEASE_TAG has VSIX metadata that does not match this tag." >&2
+            echo "Remove all three language-mux release assets, then rerun with destination 'none'." >&2
+            exit 1
+          fi
           npm run verify:vscode-package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
