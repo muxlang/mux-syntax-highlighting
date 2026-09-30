@@ -1,32 +1,37 @@
 # Mux Language Support for VSCode
 
-Provides syntax highlighting and language configuration for Mux files (`.mux`) in Visual Studio Code.
+Provides syntax highlighting, language configuration, and a client for the
+compiler's `mux lsp` server for Mux files (`.mux`) in Visual Studio Code.
 
 ## Features
 - Syntax highlighting (keywords, strings, comments, operators, literals)
 - Language configuration (bracket matching, auto-closing pairs, comment toggling)
 - Mux language icon in the Extensions panel
+- Live diagnostics, safe fixes, and formatting when `mux` is installed
+- Document symbols, go-to-definition, hover, completion, and signature help
+  through the Mux language server
+
+The server command defaults to `mux` on PATH. Set the machine-scoped
+`mux.serverPath` VSCode setting to use another compiler executable.
 
 ## Development
 
 ### Prerequisites
 - Node.js and npm
-- vsce: `npm install -g @vscode/vsce`
+- From the repository root: `npm ci`
 
 The extension grammar is generated from `../../shared/syntax-matrix.json` via `../../scripts/generate-syntax.js`.
 
 ### Build and Package
-`source.mux.json` is generated and not committed, so generate it first or the
-package ships without a grammar. From the repo root:
+`source.mux.json` is generated and not committed. From the repository root:
 ```bash
-node scripts/generate-syntax.js   # required on a fresh clone
-cd textmate-mux/vscode-language-mux
-npx @vscode/vsce package          # produces language-mux-<version>.vsix
+npm run package:vscode            # generates the grammar and packages runtime dependencies
+npm run verify:vscode-package
 ```
 
 ### Install Locally
 ```bash
-code --install-extension language-mux-*.vsix
+code --install-extension dist/language-mux.vsix
 ```
 
 Reload the window afterward (Ctrl+Shift+P -> "Developer: Reload Window").
@@ -35,14 +40,14 @@ See [../../INSTALL.md](../../INSTALL.md) for the full cross-editor install guide
 
 ### Test Changes
 1. Edit `../../shared/syntax-matrix.json`
-2. Run `node ../../scripts/generate-syntax.js`
-3. Repackage with `vsce package`
-4. Install the `.vsix` in VSCode
-5. Reload window (Ctrl+Shift+P -> "Developer: Reload Window")
+2. Run `npm run package:vscode` from the repository root
+3. Install the `.vsix` in VSCode
+4. Reload window (Ctrl+Shift+P -> "Developer: Reload Window")
 
 ## File Structure
 - `language-configuration.json` - Editor behavior (brackets, comments)
 - `mux-icon.png` - Extension icon
+- `extension.js` - VSCode client for `mux lsp`
 - `package.json` - VSCode extension manifest
 
 ## Scope Names

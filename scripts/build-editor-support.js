@@ -255,24 +255,6 @@ function buildSublimeSyntax(spec) {
 }
 
 
-function buildLanguageConfiguration() {
-  return {
-    comments: {
-      lineComment: '//',
-      blockComment: ['/*', '*/'],
-    },
-    brackets: [['{', '}'], ['[', ']'], ['(', ')']],
-    autoClosingPairs: [
-      { open: '{', close: '}' },
-      { open: '[', close: ']' },
-      { open: '(', close: ')' },
-      { open: '"', close: '"' },
-      { open: "'", close: "'" },
-    ],
-    surroundingPairs: [['{', '}'], ['[', ']'], ['(', ')'], ['"', '"'], ["'", "'"]],
-  };
-}
-
 function toJson(payload) {
   return JSON.stringify(payload, null, 2) + '\n';
 }
@@ -280,16 +262,12 @@ function toJson(payload) {
 function generateOutputs(spec) {
   const textmate = buildTextmate(spec);
   const sublime = buildSublimeSyntax(spec);
-  const languageConfig = buildLanguageConfiguration();
 
   const textmateJson = toJson(textmate);
-  const languageConfigJson = toJson(languageConfig);
 
   const r = (...parts) => path.join(REPO_ROOT, ...parts);
   return new Map([
     [r('editor-support', 'textmate', TEXTMATE_FILENAME), textmateJson],
-    [r('editor-support', 'vscode', 'syntaxes', TEXTMATE_FILENAME), textmateJson],
-    [r('editor-support', 'vscode', 'language-configuration.json'), languageConfigJson],
     [r('editor-support', 'jetbrains', 'textmate', TEXTMATE_FILENAME), textmateJson],
     [r('editor-support', 'sublime', 'Mux.sublime-syntax'), sublime],
   ]);

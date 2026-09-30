@@ -32,19 +32,15 @@ node scripts/build-editor-support.js --check
 ## Generated targets
 
 - `editor-support/textmate/mux.tmLanguage.json`
-- `editor-support/vscode/syntaxes/mux.tmLanguage.json`
-- `editor-support/vscode/language-configuration.json`
 - `editor-support/jetbrains/textmate/mux.tmLanguage.json`
 - `editor-support/sublime/Mux.sublime-syntax`
 
 ## Editor packaging notes
 
-- VSCode package scaffold: `editor-support/vscode/package.json`
-- Helix language registration example: `editor-support/helix/languages.toml`
-- Neovim integration notes: `editor-support/neovim/README.md`
-
-Neovim and Helix require a `tree-sitter-mux` parser to use the generated query
-files.
+- VSCode extension package: `textmate-mux/vscode-language-mux/`
+- Sublime and JetBrains consume the generated files listed above.
+- Neovim and Helix integrations live in
+  [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux).
 
 Do not hand-edit generated files. Update `shared/syntax-matrix.json` and
 rebuild. Update the downstream `tree-sitter-mux` consumer separately when a

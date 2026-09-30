@@ -6,7 +6,7 @@ module.exports = [
   },
   eslint.configs.recommended,
   {
-    files: ['scripts/**/*.js', '*.js'],
+    files: ['scripts/**/*.js', '*.js', 'textmate-mux/vscode-language-mux/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'commonjs',
