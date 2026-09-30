@@ -11,13 +11,15 @@
     "samples": "node scripts/check-samples.js",
     "package:vscode": "node scripts/package-vscode.js",
     "verify:vscode-package": "node scripts/verify-vsix.js",
-    "test:vscode-client": "node scripts/check-vscode-client.js"
+    "test:vscode-client": "c8 --include=textmate-mux/vscode-language-mux/extension.js --reporter=lcov node scripts/check-vscode-client.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@vscode/vsce": "^4.0.0",
+    "c8": "^12.0.0",
     "esbuild": "^0.28.2",
     "eslint": "^10.9.1",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "yauzl": "^3.4.0"
   }
 }

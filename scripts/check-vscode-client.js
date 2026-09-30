@@ -10,6 +10,7 @@ let stopped = false;
 let startError;
 let errorMessage;
 let openedGuide;
+let dismissError = false;
 const originalLoad = Module._load;
 
 class MockLanguageClient {
@@ -37,7 +38,7 @@ Module._load = function (request, parent, isMain) {
       window: {
         showErrorMessage: async (message, action) => {
           errorMessage = { message, action };
-          return action;
+          return dismissError ? undefined : action;
         },
       },
       env: {
@@ -61,6 +62,7 @@ async function verify() {
     );
     const context = { subscriptions: [] };
 
+    await extension.deactivate();
     await extension.activate(context);
     assert.equal(constructed.id, 'mux');
     assert.equal(constructed.serverOptions.command, 'mux');
@@ -83,9 +85,23 @@ async function verify() {
     assert.match(errorMessage.message, /mux\.serverPath/);
     assert.equal(errorMessage.action, 'Open install guide');
     assert.equal(openedGuide, 'https://mux-lang.dev/docs/getting-started/quick-start');
+
+    openedGuide = undefined;
+    dismissError = true;
+    await extension.activate({ subscriptions: [] });
+    assert.equal(openedGuide, undefined);
+
+    startError = 'server exited with a non-Error value';
+    await extension.activate({ subscriptions: [] });
+    assert.match(errorMessage.message, /server exited with a non-Error value/);
   } finally {
     Module._load = originalLoad;
   }
 }
 
-verify().then(() => console.log('VSCode client startup checks passed.'));
+verify()
+  .then(() => console.log('VSCode client startup checks passed.'))
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
