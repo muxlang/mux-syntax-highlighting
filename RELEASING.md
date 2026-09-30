@@ -59,7 +59,7 @@ workflow stops rather than trusting that package. Set `release_tag` to the
 extension version, then remove the old assets:
 
 ```sh
-release_tag=v0.6.0
+release_tag=v0.13.0
 gh release delete-asset "$release_tag" language-mux.vsix
 gh release delete-asset "$release_tag" language-mux.vsix.sha256
 ```

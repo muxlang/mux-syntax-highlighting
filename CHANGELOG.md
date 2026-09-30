@@ -5,9 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.13.0] - 2026-09-30
+
+### Added
+- The VSCode extension starts the released `mux lsp` server. Syntax
+  highlighting remains available when the server is missing.
 
 ### Changed
+- Set the extension version to 0.13.0 to match the Mux compiler release series.
 - Record the binary-operator trailing-newline rule and checked valid and invalid examples in the canonical syntax matrix.
 
 ## [0.6.0] - 2026-08-20
