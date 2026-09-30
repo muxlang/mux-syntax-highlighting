@@ -26,7 +26,7 @@ jobs:
     name: Package and verify release
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -42,12 +42,46 @@ jobs:
           git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"
           version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
           test "$RELEASE_TAG" = "v$version"
-      - name: Install and package
-        run: npm ci --ignore-scripts && npm run package:vscode
-      - name: Verify VSIX
-        run: npm run verify:vscode-package
-      - name: Record artifact digest
-        run: cd dist && sha256sum language-mux.vsix | tee language-mux.vsix.sha256
+      - name: Install package dependencies
+        run: npm ci --ignore-scripts
+      - name: Reuse or create the durable VSIX
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --draft \
+              --title "Mux VSCode extension $RELEASE_TAG" \
+              --notes "Verified VSIX artifact for $RELEASE_TAG."
+          fi
+
+          has_vsix=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.vsix")')
+          has_digest=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq 'any(.assets[]; .name == "language-mux.vsix.sha256")')
+
+          mkdir -p dist
+          if [[ "$has_vsix" == true && "$has_digest" == true ]]; then
+            gh release download "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern language-mux.vsix \
+              --pattern language-mux.vsix.sha256 \
+              --dir dist
+          elif [[ "$has_vsix" == false && "$has_digest" == false ]]; then
+            npm run package:vscode
+            npm run verify:vscode-package
+            (cd dist && sha256sum language-mux.vsix > language-mux.vsix.sha256)
+            gh release upload "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              dist/language-mux.vsix \
+              dist/language-mux.vsix.sha256
+          else
+            echo "Release $RELEASE_TAG has only one of the VSIX and digest assets." >&2
+            exit 1
+          fi
+
+          (cd dist && sha256sum --check language-mux.vsix.sha256)
+          npm run verify:vscode-package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: mux-vscode-release-${{ inputs.release_tag }}
