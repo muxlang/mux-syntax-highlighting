@@ -16,24 +16,37 @@ function openZip(file) {
   });
 }
 
-function nextEntry(zipFile) {
+function readEntriesAndManifest(zipFile) {
   return new Promise((resolve, reject) => {
-    const finish = (result) => {
+    const entries = [];
+    let manifest;
+    const cleanup = () => {
       zipFile.off('entry', onEntry);
       zipFile.off('end', onEnd);
       zipFile.off('error', onError);
-      resolve(result);
     };
-    const onEntry = (entry) => finish(entry);
-    const onEnd = () => finish(null);
+    const onEntry = (entry) => {
+      entries.push(entry);
+      if (entry.fileName === 'extension/package.json') {
+        readEntry(zipFile, entry).then(onManifestRead, onError);
+      } else {
+        zipFile.readEntry();
+      }
+    };
+    const onManifestRead = (contents) => {
+      manifest = contents;
+      zipFile.readEntry();
+    };
+    const onEnd = () => {
+      cleanup();
+      resolve({ entries, manifest });
+    };
     const onError = (error) => {
-      zipFile.off('entry', onEntry);
-      zipFile.off('end', onEnd);
-      zipFile.off('error', onError);
+      cleanup();
       reject(error);
     };
 
-    zipFile.once('entry', onEntry);
+    zipFile.on('entry', onEntry);
     zipFile.once('end', onEnd);
     zipFile.once('error', onError);
     zipFile.readEntry();
@@ -61,23 +74,14 @@ function readEntry(zipFile, entry) {
 
 async function readVsix(file) {
   const zipFile = await openZip(file);
-  const files = new Set();
-  let manifest;
 
   try {
-    let entry = await nextEntry(zipFile);
-    while (entry) {
-      files.add(entry.fileName);
-      if (entry.fileName === 'extension/package.json') {
-        manifest = await readEntry(zipFile, entry);
-      }
-      entry = await nextEntry(zipFile);
-    }
+    const { entries, manifest } = await readEntriesAndManifest(zipFile);
+    const files = new Set(entries.map((entry) => entry.fileName));
+    return { files, manifest };
   } finally {
     zipFile.close();
   }
-
-  return { files, manifest };
 }
 
 async function verify() {
