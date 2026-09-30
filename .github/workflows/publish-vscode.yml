@@ -104,5 +104,13 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
+      - name: Install pinned Open VSX CLI
+        env:
+          OVSX_PREFIX: ${{ runner.temp }}/ovsx-cli
+        run: |
+          npm install --prefix "$OVSX_PREFIX" --ignore-scripts --no-save ovsx@1.2.0
       - name: Publish verified VSIX
-        run: npx --yes ovsx@1.2.0 publish --trusted-publishing dist/language-mux.vsix
+        env:
+          OVSX_PREFIX: ${{ runner.temp }}/ovsx-cli
+        run: |
+          "$OVSX_PREFIX/node_modules/.bin/ovsx" publish --trusted-publishing dist/language-mux.vsix
