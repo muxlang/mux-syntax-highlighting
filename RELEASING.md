@@ -12,25 +12,26 @@ never publish.
 
 The extension publisher in
 `textmate-mux/vscode-language-mux/package.json` must be registered in the
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/manage). Grant
-that publisher access to the Azure identity used by the workflow.
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/manage), and
+the account must control that publisher. Configure its trusted-publishing
+policy to trust the `muxlang/mux-syntax-highlighting` repository,
+`.github/workflows/publish-vscode.yml`, and the `vscode-marketplace` GitHub
+Actions environment. The workflow uses `vsce publish --oidc` with the lockfile-
+pinned `@vscode/vsce` 4.0.0; it stores no Marketplace or Azure credential in
+GitHub. Create the `vscode-marketplace` environment and restrict it to version
+tags (`v*`). Add required reviewers if publishing should require a separate
+approval. Follow the [VSCE trusted publishing instructions](https://github.com/microsoft/vscode-vsce#trusted-publishing)
+when configuring the Marketplace publisher.
 
-Create a GitHub Actions environment named `vscode-marketplace`. Add the
-environment secrets `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and
-`AZURE_SUBSCRIPTION_ID`. In Microsoft Entra, create a federated credential for
-the GitHub repository environment subject
-`repo:muxlang/mux-syntax-highlighting:environment:vscode-marketplace`, then give
-that identity the Marketplace publisher permissions. Set environment reviewers
-if publishing should require an additional approval. The workflow uses
-`azure/login` and `vsce --azure-credential`, so it does not need a long-lived
-Azure DevOps token.
-
-For Open VSX, first claim the `mux-lang` namespace on Open VSX and grant it
-access to the extension. Configure that namespace with a trusted publisher for
-the `muxlang/mux-syntax-highlighting` GitHub repository and the
-`open-vsx` environment. Create a GitHub Actions environment named `open-vsx`;
+For Open VSX, first claim the `mux-lang` namespace and sign the publisher
+agreement. Configure that namespace with a trusted publisher for the
+`muxlang/mux-syntax-highlighting` repository,
+`.github/workflows/publish-vscode.yml`, and the `open-vsx` environment. Create
+the GitHub Actions environment and restrict it to version tags (`v*`);
 environment reviewers can gate publication. This uses Open VSX trusted
-publishing through GitHub OIDC and stores no Open VSX token in GitHub.
+publishing through GitHub OIDC and stores no Open VSX token in GitHub. Follow
+the [Open VSX trusted publishing instructions](https://github.com/eclipse-openvsx/openvsx/blob/main/cli/README.md#trusted-publishing)
+when configuring the namespace.
 
 The workflow's environment names are part of the OIDC identity. Keep them
 aligned with the federated credentials and trusted-publisher settings.
@@ -38,9 +39,10 @@ aligned with the federated credentials and trusted-publisher settings.
 ## Release steps
 
 1. Update the extension version and changelog, then merge the release changes.
-2. Create and push a tag named `v<version>` from the release commit. The
-   workflow checks that the tag matches the extension manifest version.
-3. Run `Publish VSCode extension` with that tag. Choose `none` to build and
+2. Create and push a tag named `v<version>` from the release commit.
+3. Run `Publish VSCode extension` with that tag selected as the workflow ref
+   and release-tag input. The workflow checks that both refs match and that
+   the tag matches the extension manifest version. Choose `none` to build and
    verify the release asset for inspection, or choose one or both registries
    to publish.
 4. If a destination environment has reviewers, inspect the package job and

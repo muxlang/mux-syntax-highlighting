@@ -34,12 +34,14 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
-      - name: Check release tag matches extension version
+      - name: Check workflow ref and release tag
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
+          WORKFLOW_REF: ${{ github.ref }}
         run: |
           git check-ref-format "refs/tags/$RELEASE_TAG"
           git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"
+          test "$WORKFLOW_REF" = "refs/tags/$RELEASE_TAG"
           version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
           test "$RELEASE_TAG" = "v$version"
       - name: Install package dependencies
@@ -188,14 +190,9 @@ jobs:
           path: dist
       - name: Verify artifact digest
         run: cd dist && sha256sum --check language-mux.vsix.sha256
-      - uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3.0.0
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Publish verified VSIX
         working-directory: textmate-mux/vscode-language-mux
-        run: node ../../node_modules/@vscode/vsce/vsce publish --azure-credential --packagePath ../../dist/language-mux.vsix
+        run: node ../../node_modules/@vscode/vsce/vsce publish --oidc --packagePath ../../dist/language-mux.vsix
 
   publish_open_vsx:
     name: Publish to Open VSX
