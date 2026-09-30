@@ -41,7 +41,10 @@ jobs:
         run: |
           git check-ref-format "refs/tags/$RELEASE_TAG"
           git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"
-          test "$WORKFLOW_REF" = "refs/tags/$RELEASE_TAG"
+          if [[ "$WORKFLOW_REF" != "refs/tags/$RELEASE_TAG" ]]; then
+            echo "Workflow ref is $WORKFLOW_REF; select release tag $RELEASE_TAG as the workflow ref." >&2
+            exit 1
+          fi
           version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
           test "$RELEASE_TAG" = "v$version"
       - name: Install package dependencies
