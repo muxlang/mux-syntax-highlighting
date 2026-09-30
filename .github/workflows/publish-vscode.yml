@@ -1,0 +1,108 @@
+name: Publish VSCode extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag to package (for example v0.6.0)
+        required: true
+        type: string
+      destination:
+        description: Where to publish the verified VSIX
+        required: true
+        default: none
+        type: choice
+        options:
+          - none
+          - marketplace
+          - open-vsx
+          - both
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package and verify release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Check release tag matches extension version
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
+          test "$RELEASE_TAG" = "v$version"
+      - name: Install and package
+        run: npm ci --ignore-scripts && npm run package:vscode
+      - name: Verify VSIX
+        run: npm run verify:vscode-package
+      - name: Record artifact digest
+        run: sha256sum dist/language-mux.vsix | tee dist/language-mux.vsix.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mux-vscode-release-${{ inputs.release_tag }}
+          path: dist/language-mux.vsix*
+          if-no-files-found: error
+          retention-days: 30
+
+  publish_marketplace:
+    name: Publish to Visual Studio Marketplace
+    if: inputs.destination == 'marketplace' || inputs.destination == 'both'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: vscode-marketplace
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: mux-vscode-release-${{ inputs.release_tag }}
+          path: dist
+      - name: Verify artifact digest
+        run: cd dist && sha256sum --check language-mux.vsix.sha256
+      - uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3.0.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Publish verified VSIX
+        working-directory: textmate-mux/vscode-language-mux
+        run: node ../../node_modules/@vscode/vsce/vsce publish --azure-credential --packagePath ../../dist/language-mux.vsix
+
+  publish_open_vsx:
+    name: Publish to Open VSX
+    if: inputs.destination == 'open-vsx' || inputs.destination == 'both'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: open-vsx
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: mux-vscode-release-${{ inputs.release_tag }}
+          path: dist
+      - name: Verify artifact digest
+        run: cd dist && sha256sum --check language-mux.vsix.sha256
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Publish verified VSIX
+        run: npx --yes ovsx@1.2.0 publish --trusted-publishing dist/language-mux.vsix

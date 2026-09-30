@@ -23,7 +23,9 @@ separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
 and the tree-sitter editors). VSCode can be packaged as a local VSIX with one
-command; marketplace and upstream tree-sitter distribution are tracked follow-up.
+command. The tagged VSCode release workflow can publish that verified package
+to the Visual Studio Marketplace, Open VSX, or both. See
+[RELEASING.md](RELEASING.md) for the one-time account setup and release steps.
 
 ---
 
