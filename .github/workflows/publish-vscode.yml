@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.release_tag }}
+          ref: refs/tags/${{ inputs.release_tag }}
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
@@ -38,6 +38,8 @@ jobs:
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
+          git check-ref-format "refs/tags/$RELEASE_TAG"
+          git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"
           version=$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")
           test "$RELEASE_TAG" = "v$version"
       - name: Install and package
@@ -45,7 +47,7 @@ jobs:
       - name: Verify VSIX
         run: npm run verify:vscode-package
       - name: Record artifact digest
-        run: sha256sum dist/language-mux.vsix | tee dist/language-mux.vsix.sha256
+        run: cd dist && sha256sum language-mux.vsix | tee language-mux.vsix.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: mux-vscode-release-${{ inputs.release_tag }}
@@ -65,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.release_tag }}
+          ref: refs/tags/${{ inputs.release_tag }}
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
@@ -97,7 +99,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.release_tag }}
+          ref: refs/tags/${{ inputs.release_tag }}
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
