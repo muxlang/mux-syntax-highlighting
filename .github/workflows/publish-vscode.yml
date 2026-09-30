@@ -68,6 +68,29 @@ jobs:
             has_build_info=$(jq -r 'index("language-mux.build.json") != null' <<< "$asset_names")
           }
 
+          download_release_assets() {
+            rm -f dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json
+            gh release download "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern language-mux.vsix \
+              --pattern language-mux.vsix.sha256 \
+              --pattern language-mux.build.json \
+              --dir dist
+          }
+
+          wait_for_release_assets() {
+            local attempt=0
+            while [[ "$attempt" -lt 12 ]]; do
+              attempt=$((attempt + 1))
+              sleep 5
+              read_release_asset_state
+              if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]] && download_release_assets; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
           read_release_asset_state
 
           mkdir -p dist
@@ -99,52 +122,14 @@ jobs:
               dist/language-mux.vsix.sha256 \
               dist/language-mux.build.json; then
               echo "Another run may have uploaded the release assets; waiting for its complete asset set."
-              uploaded=false
-              attempt=0
-              while [[ "$attempt" -lt 12 ]]; do
-                attempt=$((attempt + 1))
-                sleep 5
-                read_release_asset_state
-                if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
-                  rm -f dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json
-                  if gh release download "$RELEASE_TAG" \
-                    --repo "$GITHUB_REPOSITORY" \
-                    --pattern language-mux.vsix \
-                    --pattern language-mux.vsix.sha256 \
-                    --pattern language-mux.build.json \
-                    --dir dist; then
-                    uploaded=true
-                    break
-                  fi
-                fi
-              done
-              if [[ "$uploaded" != true ]]; then
+              if ! wait_for_release_assets; then
                 echo "No complete, downloadable VSIX asset set appeared for $RELEASE_TAG." >&2
                 exit 1
               fi
             fi
           else
-              echo "Release $RELEASE_TAG has a partial VSIX asset set. Waiting for another package job to finish." >&2
-              downloaded=false
-              attempt=0
-              while [[ "$attempt" -lt 12 ]]; do
-                attempt=$((attempt + 1))
-                sleep 5
-                read_release_asset_state
-              if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
-                rm -f dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json
-                if gh release download "$RELEASE_TAG" \
-                  --repo "$GITHUB_REPOSITORY" \
-                  --pattern language-mux.vsix \
-                  --pattern language-mux.vsix.sha256 \
-                  --pattern language-mux.build.json \
-                  --dir dist; then
-                  downloaded=true
-                  break
-                fi
-              fi
-            done
-            if [[ "$downloaded" != true ]]; then
+            echo "Release $RELEASE_TAG has a partial VSIX asset set. Waiting for another package job to finish." >&2
+            if ! wait_for_release_assets; then
               read_release_asset_state
               if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == false ]]; then
                 echo "Release $RELEASE_TAG has legacy VSIX assets without source metadata." >&2
