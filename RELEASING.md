@@ -53,9 +53,21 @@ assets remain available for later retries. To install locally, use
 `code --install-extension language-mux.vsix`.
 
 If a release already has the VSIX and checksum but no build metadata, the
-workflow stops rather than trusting that package. Remove those two assets with
-`gh release delete-asset <tag> language-mux.vsix` and
-`gh release delete-asset <tag> language-mux.vsix.sha256`, then run with
-destination `none` to build and inspect a verified package.
-If the recorded build metadata does not match the tag, remove the VSIX, digest,
-and build metadata assets before rebuilding with destination `none`.
+workflow stops rather than trusting that package. Set `release_tag` to the
+extension version, then remove the old assets:
+
+```sh
+release_tag=v0.6.0
+gh release delete-asset "$release_tag" language-mux.vsix
+gh release delete-asset "$release_tag" language-mux.vsix.sha256
+```
+
+Run the workflow with destination `none` to build and inspect a verified
+package. If the recorded build metadata does not match the tag, remove all
+three assets before rebuilding:
+
+```sh
+gh release delete-asset "$release_tag" language-mux.vsix
+gh release delete-asset "$release_tag" language-mux.vsix.sha256
+gh release delete-asset "$release_tag" language-mux.build.json
+```
