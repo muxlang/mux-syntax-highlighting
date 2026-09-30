@@ -6,6 +6,13 @@ const { Buffer } = require('node:buffer');
 const yauzl = require('yauzl');
 
 const archive = path.resolve(__dirname, '..', 'dist', 'language-mux.vsix');
+const packageManifest = path.resolve(
+  __dirname,
+  '..',
+  'textmate-mux',
+  'vscode-language-mux',
+  'package.json',
+);
 
 function openZip(file) {
   return new Promise((resolve, reject) => {
@@ -108,6 +115,13 @@ async function verify() {
   }
 
   const packageJson = JSON.parse(manifest);
+  const expectedPackage = JSON.parse(fs.readFileSync(packageManifest, 'utf8'));
+  if (packageJson.version !== expectedPackage.version) {
+    throw new Error(
+      `VSIX version ${packageJson.version} does not match source version ${expectedPackage.version}`,
+    );
+  }
+
   const grammar = packageJson.contributes?.grammars?.find((item) => item.language === 'mux');
   if (
     packageJson.publisher !== 'mux-lang' ||

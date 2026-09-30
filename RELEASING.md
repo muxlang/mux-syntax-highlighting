@@ -1,9 +1,12 @@
 # Releasing the VSCode extension
 
 The VSCode package is published from a version tag by the `Publish VSCode
-extension` workflow. The workflow builds and verifies one VSIX, records its
-SHA-256 digest, and uploads it as an artifact. Publishing is a separate,
-manually selected step. Ordinary CI runs never publish.
+extension` workflow. The workflow stores the verified VSIX, SHA-256 digest,
+and tag/source/version metadata on a GitHub Release for that tag, creating a
+draft release when one does not exist. Later runs for the same tag verify that
+metadata and reuse the exact assets, so a registry retry cannot rebuild
+different bytes. Unverified or partial assets fail closed. Ordinary CI runs
+never publish.
 
 ## One-time setup
 
@@ -37,11 +40,34 @@ aligned with the federated credentials and trusted-publisher settings.
 1. Update the extension version and changelog, then merge the release changes.
 2. Create and push a tag named `v<version>` from the release commit. The
    workflow checks that the tag matches the extension manifest version.
-3. Run `Publish VSCode extension` with that tag. Choose `none` to build an
-   artifact for inspection, or choose one or both registries to publish.
+3. Run `Publish VSCode extension` with that tag. Choose `none` to build and
+   verify the release asset for inspection, or choose one or both registries
+   to publish.
 4. If a destination environment has reviewers, inspect the package job and
    artifact before approving its publishing job. Each publishing job verifies
-   the downloaded artifact digest before upload.
+   the digest of the durable VSIX before upload. To retry a failed destination,
+   run the workflow again for the same tag and choose only that destination.
 
-The resulting VSIX is also available as a workflow artifact for 30 days. To
-install it locally, use `code --install-extension language-mux.vsix`.
+Each run also uploads the VSIX as a workflow artifact for 30 days. The release
+assets remain available for later retries. To install locally, use
+`code --install-extension language-mux.vsix`.
+
+If a release already has the VSIX and checksum but no build metadata, the
+workflow stops rather than trusting that package. Set `release_tag` to the
+extension version, then remove the old assets:
+
+```sh
+release_tag=v0.6.0
+gh release delete-asset "$release_tag" language-mux.vsix
+gh release delete-asset "$release_tag" language-mux.vsix.sha256
+```
+
+Run the workflow with destination `none` to build and inspect a verified
+package. If the recorded build metadata does not match the tag, remove all
+three assets before rebuilding:
+
+```sh
+gh release delete-asset "$release_tag" language-mux.vsix
+gh release delete-asset "$release_tag" language-mux.vsix.sha256
+gh release delete-asset "$release_tag" language-mux.build.json
+```
