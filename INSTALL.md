@@ -16,19 +16,29 @@ highlighting; Emacs setup is manual.
 
 ## VSCode
 
-The maintained VSCode extension is `mux-lang.language-mux` in
-`textmate-mux/vscode-language-mux/`. To install a local VSIX from a clean clone,
-run these commands from the repository root:
+The maintained extension is `mux-lang.language-mux`. Install **Mux Language
+Support** from the Visual Studio Marketplace. In VS Code, search the Extensions
+view for that name, or run:
+
+```bash
+code --install-extension mux-lang.language-mux
+```
+
+For VSCodium and other editors configured to use Open VSX, search for the same
+extension or run:
+
+```bash
+codium --install-extension mux-lang.language-mux
+```
+
+To install from source or test a local build, run these commands from the
+repository root:
 
 ```bash
 npm ci
 npm run package:vscode           # generates the grammar and creates dist/language-mux.vsix
 code --install-extension dist/language-mux.vsix
 ```
-
-If you previously installed the duplicate `mux-lang.mux-syntax` extension,
-remove it with `code --uninstall-extension mux-lang.mux-syntax` before
-installing `mux-lang.language-mux`.
 
 Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any
 `.mux` file. Colors come from your active VSCode theme, not the grammar.
