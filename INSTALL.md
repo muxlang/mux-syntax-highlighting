@@ -24,11 +24,24 @@ view for that name, or run:
 code --install-extension muxlang.language-mux
 ```
 
+If you installed an older local VSIX before the publisher ID changed, remove
+that copy first so it does not start a second language client:
+
+```bash
+code --uninstall-extension mux-lang.language-mux
+```
+
 For VSCodium and other editors configured to use Open VSX, search for the same
 extension or run:
 
 ```bash
 codium --install-extension muxlang.language-mux
+```
+
+For an older local VSIX in VSCodium, remove its previous identity first:
+
+```bash
+codium --uninstall-extension mux-lang.language-mux
 ```
 
 To install from source or test a local build, run these commands from the

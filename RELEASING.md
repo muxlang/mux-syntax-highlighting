@@ -8,20 +8,22 @@ metadata and reuse the exact assets, so a registry retry cannot rebuild
 different bytes. Unverified or partial assets fail closed. Ordinary CI runs
 never publish.
 
-## One-time setup
+## First publication
 
-The extension publisher in
-`textmate-mux/vscode-language-mux/package.json` must be registered in the
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/manage), and
-the account must control that publisher. Configure its trusted-publishing
-policy to trust the `muxlang/mux-syntax-highlighting` repository,
+The first Visual Studio Marketplace release is uploaded from the publisher
+management page. The verified package is attached to the GitHub Release by the
+workflow below. Download `language-mux.vsix`, then upload it from
+[Marketplace publisher management](https://marketplace.visualstudio.com/manage).
+This is Microsoft's documented first-publish path; it does not need a PAT or a
+GitHub publishing secret.
+
+The `marketplace` workflow destination uses `vsce publish --oidc`. Use it only
+if the publisher account has a trusted-publishing policy for repository
+`muxlang/mux-syntax-highlighting`, workflow
 `.github/workflows/publish-vscode.yml`, and the `vscode-marketplace` GitHub
-Actions environment. The workflow uses `vsce publish --oidc` with the lockfile-
-pinned `@vscode/vsce` 4.0.0; it stores no Marketplace or Azure credential in
-GitHub. Create the `vscode-marketplace` environment and restrict it to version
-tags (`v*`). Add required reviewers if publishing should require a separate
-approval. Follow the [VSCE trusted publishing instructions](https://github.com/microsoft/vscode-vsce#trusted-publishing)
-when configuring the Marketplace publisher.
+Actions environment. The workflow stores no Marketplace credential. If that
+policy is not available in publisher management, choose `none` and upload the
+verified VSIX manually as described above.
 
 For Open VSX, first claim the `muxlang` namespace and sign the publisher
 agreement. This namespace is separate from the Visual Studio Marketplace
