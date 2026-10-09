@@ -16,19 +16,19 @@ highlighting; Emacs setup is manual.
 
 ## VSCode
 
-The maintained extension is `mux-lang.language-mux`. Install **Mux Language
+The maintained extension is `muxlang.language-mux`. Install **Mux Language
 Support** from the Visual Studio Marketplace. In VS Code, search the Extensions
 view for that name, or run:
 
 ```bash
-code --install-extension mux-lang.language-mux
+code --install-extension muxlang.language-mux
 ```
 
 For VSCodium and other editors configured to use Open VSX, search for the same
 extension or run:
 
 ```bash
-codium --install-extension mux-lang.language-mux
+codium --install-extension muxlang.language-mux
 ```
 
 To install from source or test a local build, run these commands from the

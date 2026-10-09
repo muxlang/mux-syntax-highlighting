@@ -23,8 +23,9 @@ tags (`v*`). Add required reviewers if publishing should require a separate
 approval. Follow the [VSCE trusted publishing instructions](https://github.com/microsoft/vscode-vsce#trusted-publishing)
 when configuring the Marketplace publisher.
 
-For Open VSX, first claim the `mux-lang` namespace and sign the publisher
-agreement. Configure that namespace with a trusted publisher for the
+For Open VSX, first claim the `muxlang` namespace and sign the publisher
+agreement. This namespace is separate from the Visual Studio Marketplace
+publisher. Configure it with a trusted publisher for the
 `muxlang/mux-syntax-highlighting` repository,
 `.github/workflows/publish-vscode.yml`, and the `open-vsx` environment. Create
 the GitHub Actions environment and restrict it to version tags (`v*`);

@@ -3,7 +3,7 @@
   "displayName": "Mux Language Support",
   "description": "Syntax highlighting and language support for the Mux programming language",
   "version": "0.13.0",
-  "publisher": "mux-lang",
+  "publisher": "muxlang",
   "license": "MIT",
   "icon": "./mux-icon.png",
   "main": "extension.bundle.js",

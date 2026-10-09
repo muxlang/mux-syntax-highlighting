@@ -5,4 +5,4 @@
 - Add the Mux language client, which starts `mux lsp` from PATH.
 - Keep syntax highlighting available when the compiler or language server is missing.
 - Publish one verified VSIX to the Visual Studio Marketplace and Open VSX.
-- Install Mux Language Support from either registry as `mux-lang.language-mux`.
+- Install Mux Language Support from either registry as `muxlang.language-mux`.

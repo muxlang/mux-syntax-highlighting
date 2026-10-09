@@ -23,7 +23,7 @@ separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
 and the tree-sitter editors). Install the VS Code extension from the Visual
-Studio Marketplace or Open VSX as `mux-lang.language-mux`. The tagged release
+Studio Marketplace or Open VSX as `muxlang.language-mux`. The tagged release
 workflow publishes the same verified VSIX to either or both registries. See
 [RELEASING.md](RELEASING.md) for the one-time account setup and release steps.
 
