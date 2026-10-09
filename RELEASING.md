@@ -5,8 +5,10 @@
 After the first Marketplace upload, GitHub Actions can publish updates without
 anyone downloading or uploading a VSIX. When a change to the VS Code extension
 or its generated grammar lands on `main`, the workflow runs the extension
-checks, builds and verifies the VSIX, then publishes it to the Marketplace.
-Each update must raise the version in
+checks and builds a verified VSIX. It publishes only after the publisher's
+OIDC trust is configured and the repository Actions variable
+`VSCODE_MARKETPLACE_AUTO_PUBLISH` is set to `true`. Until then, the workflow
+builds the package but skips publishing. Each published update must raise the version in
 `textmate-mux/vscode-language-mux/package.json` in the same change. The
 workflow fails if the version does not increase, since the Marketplace will
 not accept a version that was already published.
@@ -17,10 +19,13 @@ PAT in GitHub. The publisher must trust this GitHub repository and the
 `vscode-marketplace` GitHub Actions environment. Create that environment and
 allow deployments from `main` and `v*` tags. Configure the repository,
 workflow, and environment in the Marketplace publisher settings after the
-first upload. If the publisher page does not offer a trusted-publishing
-setting, the job cannot authenticate yet. Microsoft's documented fallback is
-Microsoft Entra ID with a managed identity; that needs Azure account setup
-and a federated GitHub Actions identity.
+first upload. Then add the repository variable
+`VSCODE_MARKETPLACE_AUTO_PUBLISH=true` under Settings → Secrets and variables →
+Actions → Variables. If the publisher page does not offer a trusted-publishing
+setting, leave the variable unset. The workflow will still build verified
+VSIX artifacts, but it will not try to publish. Microsoft's documented
+fallback is Microsoft Entra ID with a managed identity; that needs Azure
+account setup and a federated GitHub Actions identity.
 
 ## First publication
 
