@@ -1,30 +1,46 @@
 # Releasing the VSCode extension
 
-The VSCode package is published from a version tag by the `Publish VSCode
-extension` workflow. The workflow stores the verified VSIX, SHA-256 digest,
-and tag/source/version metadata on a GitHub Release for that tag, creating a
-draft release when one does not exist. Later runs for the same tag verify that
-metadata and reuse the exact assets, so a registry retry cannot rebuild
-different bytes. Unverified or partial assets fail closed. Ordinary CI runs
-never publish.
+## Automatic Marketplace updates
 
-## One-time setup
+After the first Marketplace upload, GitHub Actions can publish updates without
+anyone downloading or uploading a VSIX. When a change to the VS Code extension
+or its generated grammar lands on `main`, the workflow runs the extension
+checks and builds a verified VSIX. It publishes only after the publisher's
+OIDC trust is configured and the repository Actions variable
+`VSCODE_MARKETPLACE_AUTO_PUBLISH` is set to `true`. Until then, the workflow
+builds the package but skips publishing. Each published update must raise the version in
+`textmate-mux/vscode-language-mux/package.json` in the same change. The
+workflow fails if the version does not increase, since the Marketplace will
+not accept a version that was already published.
 
-The extension publisher in
-`textmate-mux/vscode-language-mux/package.json` must be registered in the
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/manage), and
-the account must control that publisher. Configure its trusted-publishing
-policy to trust the `muxlang/mux-syntax-highlighting` repository,
-`.github/workflows/publish-vscode.yml`, and the `vscode-marketplace` GitHub
-Actions environment. The workflow uses `vsce publish --oidc` with the lockfile-
-pinned `@vscode/vsce` 4.0.0; it stores no Marketplace or Azure credential in
-GitHub. Create the `vscode-marketplace` environment and restrict it to version
-tags (`v*`). Add required reviewers if publishing should require a separate
-approval. Follow the [VSCE trusted publishing instructions](https://github.com/microsoft/vscode-vsce#trusted-publishing)
-when configuring the Marketplace publisher.
+The Marketplace publishing job uses `vsce publish --oidc` and does not store a
+PAT in GitHub. The publisher must trust this GitHub repository and the
+`.github/workflows/publish-vscode.yml` workflow. The job uses the
+`vscode-marketplace` GitHub Actions environment. Create that environment and
+allow deployments from `main` and `v*` tags. Configure the repository,
+workflow, and environment in the Marketplace publisher settings after the
+first upload. Then add the repository variable
+`VSCODE_MARKETPLACE_AUTO_PUBLISH=true` under Settings → Secrets and variables →
+Actions → Variables. If the publisher page does not offer a trusted-publishing
+setting, leave the variable unset. The workflow will still build verified
+VSIX artifacts, but it will not try to publish. Microsoft's documented
+fallback is Microsoft Entra ID with a managed identity; that needs Azure
+account setup and a federated GitHub Actions identity.
 
-For Open VSX, first claim the `mux-lang` namespace and sign the publisher
-agreement. Configure that namespace with a trusted publisher for the
+## First publication
+
+The first Visual Studio Marketplace release is uploaded from the publisher
+management page. From the repository root, run `npm ci`,
+`npm run package:vscode`, and `npm run verify:vscode-package`. Upload
+`dist/language-mux.vsix` from
+[Marketplace publisher management](https://marketplace.visualstudio.com/manage).
+The package is version `0.13.0`. This is a one-time step to create the listing.
+Once the listing and trusted-publishing policy are in place, future versioned
+changes publish from GitHub Actions automatically.
+
+For Open VSX, first claim the `muxlang` namespace and sign the publisher
+agreement. This namespace is separate from the Visual Studio Marketplace
+publisher. Configure it with a trusted publisher for the
 `muxlang/mux-syntax-highlighting` repository,
 `.github/workflows/publish-vscode.yml`, and the `open-vsx` environment. Create
 the GitHub Actions environment and restrict it to version tags (`v*`);
@@ -36,7 +52,15 @@ when configuring the namespace.
 The workflow's environment names are part of the OIDC identity. Keep them
 aligned with the federated credentials and trusted-publisher settings.
 
-## Release steps
+## Manual tagged package workflow
+
+The `Publish VSCode extension` workflow also supports tagged builds. It stores
+the verified VSIX, SHA-256 digest, and tag/source/version metadata on a GitHub
+Release for that tag, creating a draft release when one does not exist. Later
+runs for the same tag verify that metadata and reuse the exact assets, so a
+registry retry cannot rebuild different bytes. Unverified or partial assets
+fail closed. Use this workflow when you need a durable tagged VSIX or want to
+publish to Open VSX.
 
 1. Update the extension version and changelog, then merge the release changes.
 2. Create and push a tag named `v<version>` from the release commit.
