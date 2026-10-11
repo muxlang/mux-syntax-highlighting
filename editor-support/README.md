@@ -39,8 +39,9 @@ node scripts/build-editor-support.js --check
 
 - VSCode extension package: `textmate-mux/vscode-language-mux/`
 - Sublime and JetBrains consume the generated files listed above.
-- Neovim and Helix integrations live in
-  [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux).
+- The Neovim plugin and Helix integration live in
+  [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux); see its
+  [integration guide](https://github.com/muxlang/tree-sitter-mux/blob/main/INTEGRATION.md).
 
 Do not hand-edit generated files. Update `shared/syntax-matrix.json` and
 rebuild. Update the downstream `tree-sitter-mux` consumer separately when a
