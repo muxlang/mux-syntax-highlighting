@@ -125,7 +125,7 @@ async function verify() {
 
   const grammar = packageJson.contributes?.grammars?.find((item) => item.language === 'mux');
   if (
-    packageJson.publisher !== 'mux-lang' ||
+    packageJson.publisher !== 'muxlang' ||
     packageJson.name !== 'language-mux' ||
     grammar?.scopeName !== 'source.mux' ||
     grammar?.path !== './source.mux.json' ||

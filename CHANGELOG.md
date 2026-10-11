@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - The VSCode extension starts the released `mux lsp` server. Syntax
   highlighting remains available when the server is missing.
+- Publish the verified extension through the Visual Studio Marketplace and Open
+  VSX using the same package and its recorded SHA-256 digest.
+- Document registry installation for users and trusted publishing setup for
+  maintainers.
 
 ### Changed
 - Set the extension version to 0.13.0 to match the Mux compiler release series.

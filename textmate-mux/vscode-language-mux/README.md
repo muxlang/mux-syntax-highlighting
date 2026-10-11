@@ -3,6 +3,9 @@
 Provides syntax highlighting, language configuration, and a client for the
 compiler's `mux lsp` server for Mux files (`.mux`) in Visual Studio Code.
 
+Install **Mux Language Support** from the Visual Studio Marketplace or Open VSX.
+The extension identifier is `muxlang.language-mux`.
+
 ## Features
 - Syntax highlighting (keywords, strings, comments, operators, literals)
 - Language configuration (bracket matching, auto-closing pairs, comment toggling)
