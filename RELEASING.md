@@ -5,7 +5,11 @@
 After the first Marketplace upload, GitHub Actions can publish updates without
 anyone downloading or uploading a VSIX. When a change to the VS Code extension
 or its generated grammar lands on `main`, the workflow runs the extension
-checks and builds a verified VSIX. It publishes only after the publisher's
+checks and builds a verified VSIX. Once automatic publishing is enabled, the
+workflow saves that exact package and its build metadata on a draft GitHub
+Release tagged `v<version>`, then publishes those bytes to the Marketplace.
+The manual tagged workflow reuses the saved assets, so retrying Open VSX does
+not rebuild a different package. It publishes only after the publisher's
 OIDC trust is configured and the repository Actions variable
 `VSCODE_MARKETPLACE_AUTO_PUBLISH` is set to `true`. Until then, the workflow
 builds the package but skips publishing. Each published update must raise the version in
@@ -59,8 +63,9 @@ the verified VSIX, SHA-256 digest, and tag/source/version metadata on a GitHub
 Release for that tag, creating a draft release when one does not exist. Later
 runs for the same tag verify that metadata and reuse the exact assets, so a
 registry retry cannot rebuild different bytes. Unverified or partial assets
-fail closed. Use this workflow when you need a durable tagged VSIX or want to
-publish to Open VSX.
+fail closed. For versions published automatically to the Marketplace, the
+workflow has already created this release and the tagged run reuses its exact
+VSIX. Use this workflow to publish that package to Open VSX.
 
 1. Update the extension version and changelog, then merge the release changes.
 2. Create and push a tag named `v<version>` from the release commit.

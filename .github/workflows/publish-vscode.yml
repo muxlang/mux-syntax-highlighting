@@ -103,12 +103,134 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  persist_auto_release:
+    name: Save the verified package on its version release
+    if: github.event_name == 'push' && vars.VSCODE_MARKETPLACE_AUTO_PUBLISH == 'true'
+    needs:
+      - check_auto_publish_version
+      - package_auto_publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: mux-vscode-auto-${{ github.sha }}
+          path: dist
+      - name: Create or verify the durable version release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ needs.check_auto_publish_version.outputs.version }}
+          SOURCE_COMMIT: ${{ github.sha }}
+          VERSION: ${{ needs.check_auto_publish_version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          if [[ "$(node -p "require('./textmate-mux/vscode-language-mux/package.json').version")" != "$VERSION" ]]; then
+            echo "The checked version does not match the extension manifest." >&2
+            exit 1
+          fi
+
+          resolve_tag_commit() {
+            git ls-remote --tags origin "refs/tags/$RELEASE_TAG" "refs/tags/$RELEASE_TAG^{}" |
+              awk -v tag="refs/tags/$RELEASE_TAG" '
+                $2 == tag { commit = $1 }
+                $2 == tag "^{}" { commit = $1 }
+                END { print commit }
+              '
+          }
+
+          tag_commit=$(resolve_tag_commit)
+          if [[ -n "$tag_commit" && "$tag_commit" != "$SOURCE_COMMIT" ]]; then
+            echo "Tag $RELEASE_TAG points to $tag_commit, not $SOURCE_COMMIT." >&2
+            exit 1
+          fi
+
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --draft \
+              --target "$SOURCE_COMMIT" \
+              --title "Mux VSCode extension $RELEASE_TAG" \
+              --notes "Verified VSIX artifact for $RELEASE_TAG." \
+              || gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
+          fi
+
+          tag_commit=$(resolve_tag_commit)
+          if [[ "$tag_commit" != "$SOURCE_COMMIT" ]]; then
+            echo "Tag $RELEASE_TAG does not resolve to source commit $SOURCE_COMMIT." >&2
+            exit 1
+          fi
+
+          assets=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '[.assets[].name]')
+          has_vsix=$(jq -r 'index("language-mux.vsix") != null' <<< "$assets")
+          has_digest=$(jq -r 'index("language-mux.vsix.sha256") != null' <<< "$assets")
+          has_build_info=$(jq -r 'index("language-mux.build.json") != null' <<< "$assets")
+
+          if [[ "$has_vsix" == true && "$has_digest" == true && "$has_build_info" == true ]]; then
+            mkdir -p release-assets
+            gh release download "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern language-mux.vsix \
+              --pattern language-mux.vsix.sha256 \
+              --pattern language-mux.build.json \
+              --dir release-assets
+            (cd release-assets && sha256sum --check language-mux.vsix.sha256)
+            digest=$(sha256sum release-assets/language-mux.vsix | cut -d ' ' -f 1)
+            jq -e \
+              --arg repository "$GITHUB_REPOSITORY" \
+              --arg release_tag "$RELEASE_TAG" \
+              --arg source_commit "$SOURCE_COMMIT" \
+              --arg version "$VERSION" \
+              --arg sha256 "$digest" \
+              '.repository == $repository and .release_tag == $release_tag and .source_commit == $source_commit and .version == $version and .sha256 == $sha256' \
+              release-assets/language-mux.build.json >/dev/null
+            cp release-assets/language-mux.vsix dist/language-mux.vsix
+            cp release-assets/language-mux.vsix.sha256 dist/language-mux.vsix.sha256
+            cp release-assets/language-mux.build.json dist/language-mux.build.json
+          elif [[ "$has_vsix" == false && "$has_digest" == false && "$has_build_info" == false ]]; then
+            digest=$(sha256sum dist/language-mux.vsix | cut -d ' ' -f 1)
+            jq -n \
+              --arg repository "$GITHUB_REPOSITORY" \
+              --arg release_tag "$RELEASE_TAG" \
+              --arg source_commit "$SOURCE_COMMIT" \
+              --arg version "$VERSION" \
+              --arg sha256 "$digest" \
+              '{repository: $repository, release_tag: $release_tag, source_commit: $source_commit, version: $version, sha256: $sha256}' \
+              > dist/language-mux.build.json
+            gh release upload "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              dist/language-mux.vsix \
+              dist/language-mux.vsix.sha256 \
+              dist/language-mux.build.json
+          else
+            echo "Release $RELEASE_TAG has a partial VSIX asset set. Refusing to replace or publish it." >&2
+            exit 1
+          fi
+
+          (cd dist && sha256sum --check language-mux.vsix.sha256)
+          npm ci --ignore-scripts
+          npm run verify:vscode-package
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mux-vscode-release-${{ needs.check_auto_publish_version.outputs.version }}
+          path: dist/language-mux.vsix*
+          if-no-files-found: error
+          retention-days: 30
+
   publish_auto_marketplace:
     name: Publish versioned change to Visual Studio Marketplace
     if: github.event_name == 'push' && vars.VSCODE_MARKETPLACE_AUTO_PUBLISH == 'true'
     needs:
       - check_auto_publish_version
-      - package_auto_publish
+      - persist_auto_release
     runs-on: ubuntu-latest
     environment: vscode-marketplace
     permissions:
@@ -125,7 +247,7 @@ jobs:
         run: npm ci --ignore-scripts
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: mux-vscode-auto-${{ github.sha }}
+          name: mux-vscode-release-${{ needs.check_auto_publish_version.outputs.version }}
           path: dist
       - name: Verify artifact digest
         run: cd dist && sha256sum --check language-mux.vsix.sha256
