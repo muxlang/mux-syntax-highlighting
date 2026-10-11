@@ -133,6 +133,7 @@ jobs:
           SOURCE_COMMIT: ${{ github.sha }}
           VERSION: ${{ needs.check_auto_publish_version.outputs.version }}
         run: |
+          npm ci --ignore-scripts
           bash scripts/ci/manage-vscode-release-assets.sh auto
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
