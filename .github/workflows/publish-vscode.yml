@@ -149,7 +149,7 @@ jobs:
       - check_auto_publish_version
       - persist_auto_release
     runs-on: ubuntu-latest
-    environment: vscode-marketplace
+    environment: marketplace
     permissions:
       contents: read
       id-token: write
@@ -168,9 +168,15 @@ jobs:
           path: dist
       - name: Verify artifact digest
         run: cd dist && sha256sum --check language-mux.vsix.sha256
+      - name: Authenticate and verify Marketplace publisher
+        uses: ./.github/actions/marketplace-auth
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Publish verified VSIX
         working-directory: textmate-mux/vscode-language-mux
-        run: node ../../node_modules/@vscode/vsce/vsce publish --oidc --packagePath ../../dist/language-mux.vsix
+        run: node ../../node_modules/@vscode/vsce/vsce publish --azure-credential --packagePath ../../dist/language-mux.vsix
 
   package:
     name: Package and verify release
@@ -221,7 +227,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && (inputs.destination == 'marketplace' || inputs.destination == 'both')
     needs: package
     runs-on: ubuntu-latest
-    environment: vscode-marketplace
+    environment: marketplace
     permissions:
       contents: read
       id-token: write
@@ -239,9 +245,15 @@ jobs:
           path: dist
       - name: Verify artifact digest
         run: cd dist && sha256sum --check language-mux.vsix.sha256
+      - name: Authenticate and verify Marketplace publisher
+        uses: ./.github/actions/marketplace-auth
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Publish verified VSIX
         working-directory: textmate-mux/vscode-language-mux
-        run: node ../../node_modules/@vscode/vsce/vsce publish --oidc --packagePath ../../dist/language-mux.vsix
+        run: node ../../node_modules/@vscode/vsce/vsce publish --azure-credential --packagePath ../../dist/language-mux.vsix
 
   publish_open_vsx:
     name: Publish to Open VSX

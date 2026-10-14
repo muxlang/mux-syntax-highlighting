@@ -1,0 +1,24 @@
+name: Authenticate VS Code Marketplace publisher
+description: Sign in through Azure workload identity and verify publisher access
+inputs:
+  azure-client-id:
+    description: Client ID of the user-assigned managed identity
+    required: true
+  azure-tenant-id:
+    description: Tenant ID for the managed identity
+    required: true
+  azure-subscription-id:
+    description: Subscription ID for the managed identity
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Sign in to Azure with GitHub OIDC
+      uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+      with:
+        client-id: ${{ inputs.azure-client-id }}
+        tenant-id: ${{ inputs.azure-tenant-id }}
+        subscription-id: ${{ inputs.azure-subscription-id }}
+    - name: Verify Marketplace publisher access
+      shell: bash
+      run: node node_modules/@vscode/vsce/vsce verify-pat muxlang --azure-credential

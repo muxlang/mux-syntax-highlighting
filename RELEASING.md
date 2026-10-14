@@ -9,27 +9,43 @@ checks and builds a verified VSIX. Once automatic publishing is enabled, the
 workflow saves that exact package and its build metadata on a draft GitHub
 Release tagged `v<version>`, then publishes those bytes to the Marketplace.
 The manual tagged workflow reuses the saved assets, so retrying Open VSX does
-not rebuild a different package. It publishes only after the publisher's
-OIDC trust is configured and the repository Actions variable
+not rebuild a different package. Marketplace publishing starts after the
+managed identity is configured and the repository Actions variable
 `VSCODE_MARKETPLACE_AUTO_PUBLISH` is set to `true`. Until then, the workflow
-builds the package but skips publishing. Each published update must raise the version in
-`textmate-mux/vscode-language-mux/package.json` in the same change. The
-workflow fails if the version does not increase, since the Marketplace will
+builds the package but skips publishing. Each published update must raise the
+version in `textmate-mux/vscode-language-mux/package.json` in the same change.
+The workflow fails if the version does not increase, since the Marketplace will
 not accept a version that was already published.
 
-The Marketplace publishing job uses `vsce publish --oidc` and does not store a
-PAT in GitHub. The publisher must trust this GitHub repository and the
-`.github/workflows/publish-vscode.yml` workflow. The job uses the
-`vscode-marketplace` GitHub Actions environment. Create that environment and
-allow deployments from `main` and `v*` tags. Configure the repository,
-workflow, and environment in the Marketplace publisher settings after the
-first upload. Then add the repository variable
-`VSCODE_MARKETPLACE_AUTO_PUBLISH=true` under Settings → Secrets and variables →
-Actions → Variables. If the publisher page does not offer a trusted-publishing
-setting, leave the variable unset. The workflow will still build verified
-VSIX artifacts, but it will not try to publish. Microsoft's documented
-fallback is Microsoft Entra ID with a managed identity; that needs Azure
-account setup and a federated GitHub Actions identity.
+Marketplace publishing uses a user-assigned Microsoft Entra managed identity.
+GitHub Actions signs in through workload identity federation, then `vsce
+publish --azure-credential` obtains a short-lived token. No Marketplace PAT is
+stored in GitHub.
+
+Set up the identity once:
+
+1. In the `muxlang` Marketplace publisher, add the managed identity as a
+   **Contributor**.
+2. In the identity's federated credentials, use issuer
+   `https://token.actions.githubusercontent.com`, subject
+   `repo:muxlang/mux-syntax-highlighting:environment:marketplace`, and audience
+   `api://AzureADTokenExchange`.
+3. In repository Settings → Environments, create `marketplace` and allow the
+   `main` branch and `v*` tags. Add `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and
+   `AZURE_SUBSCRIPTION_ID` as environment secrets.
+4. Run **Verify VS Code Marketplace authentication** from the Actions tab on
+   `main`. It checks the Azure login and Marketplace publisher access without
+   publishing anything.
+5. After that check passes, add the repository variable
+   `VSCODE_MARKETPLACE_AUTO_PUBLISH=true` under Settings → Secrets and variables
+   → Actions → Variables to enable automatic publication.
+
+The automatic workflow only publishes after the extension checks and package
+verification pass and the extension version increases. It saves the verified
+VSIX and digest on the matching GitHub release before publishing. The tagged
+workflow uses the same Azure identity for
+Marketplace publication. Open VSX publishing remains a separate step and uses
+its own trusted-publishing environment.
 
 ## First publication
 
@@ -53,8 +69,8 @@ publishing through GitHub OIDC and stores no Open VSX token in GitHub. Follow
 the [Open VSX trusted publishing instructions](https://github.com/eclipse-openvsx/openvsx/blob/main/cli/README.md#trusted-publishing)
 when configuring the namespace.
 
-The workflow's environment names are part of the OIDC identity. Keep them
-aligned with the federated credentials and trusted-publisher settings.
+The `marketplace` environment name is part of the OIDC identity. Keep it aligned
+with the federated credential subject.
 
 ## Manual tagged package workflow
 
