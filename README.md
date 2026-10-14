@@ -24,8 +24,9 @@ separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
 and the tree-sitter editors). Install the VS Code extension from the Visual
 Studio Marketplace or Open VSX as `muxlang.language-mux`. The tagged release
-workflow can publish the same verified VSIX to either or both registries. See
-[RELEASING.md](RELEASING.md) for the one-time account setup and release steps.
+workflow can build a verified VSIX for manual upload and optionally publish it
+to Open VSX. Visual Studio Marketplace releases are uploaded manually. See
+[RELEASING.md](RELEASING.md) for release steps.
 
 ---
 
@@ -99,12 +100,12 @@ the editor-support configs).
 
 ## Related repositories
 
-| Repo | What it is |
-|------|------------|
-| [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) | Tree-sitter grammar (Neovim/Helix/Emacs) |
-| [mux-website](https://github.com/muxlang/mux-website) | Docs site (mux-lang.dev), third spec consumer (Shiki) |
-| [mux-compiler](https://github.com/muxlang/mux-compiler) | The language, compiler, and CLI |
-| [mux-context](https://github.com/muxlang/mux-context) | Cross-repo architecture, design rationale, glossary, releases |
+| Repo                                                          | What it is                                                    |
+| ------------------------------------------------------------- | ------------------------------------------------------------- |
+| [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) | Tree-sitter grammar (Neovim/Helix/Emacs)                      |
+| [mux-website](https://github.com/muxlang/mux-website)         | Docs site (mux-lang.dev), third spec consumer (Shiki)         |
+| [mux-compiler](https://github.com/muxlang/mux-compiler)       | The language, compiler, and CLI                               |
+| [mux-context](https://github.com/muxlang/mux-context)         | Cross-repo architecture, design rationale, glossary, releases |
 
 ---
 
