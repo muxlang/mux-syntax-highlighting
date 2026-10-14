@@ -31,8 +31,9 @@ Set up the identity once:
    `repo:muxlang/mux-syntax-highlighting:environment:marketplace`, and audience
    `api://AzureADTokenExchange`.
 3. In repository Settings → Environments, create `marketplace` and allow the
-   `main` branch and `v*` tags. Add `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and
-   `AZURE_SUBSCRIPTION_ID` as environment secrets.
+   `main` branch and `v*` tags. Add `AZURE_CLIENT_ID` and `AZURE_TENANT_ID` as
+   environment secrets. Azure login allows tenant access without a subscription
+   because Marketplace publishing does not use Azure subscription resources.
 4. Run **Verify VS Code Marketplace authentication** from the Actions tab on
    `main`. It checks the Azure login and Marketplace publisher access without
    publishing anything.

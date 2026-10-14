@@ -7,9 +7,6 @@ inputs:
   azure-tenant-id:
     description: Tenant ID for the managed identity
     required: true
-  azure-subscription-id:
-    description: Subscription ID for the managed identity
-    required: true
 runs:
   using: composite
   steps:
@@ -18,7 +15,7 @@ runs:
       with:
         client-id: ${{ inputs.azure-client-id }}
         tenant-id: ${{ inputs.azure-tenant-id }}
-        subscription-id: ${{ inputs.azure-subscription-id }}
+        allow-no-subscriptions: true
     - name: Verify Marketplace publisher access
       shell: bash
       run: node node_modules/@vscode/vsce/vsce verify-pat muxlang --azure-credential
