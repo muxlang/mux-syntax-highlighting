@@ -22,11 +22,9 @@ jobs:
           node-version: '22'
       - name: Install locked publishing tools
         run: npm ci --ignore-scripts
-      - name: Sign in to Azure with GitHub OIDC
-        uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+      - name: Authenticate and verify Marketplace publisher
+        uses: ./.github/actions/marketplace-auth
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - name: Verify Marketplace publisher access
-        run: npm exec -- vsce verify-pat muxlang --azure-credential
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

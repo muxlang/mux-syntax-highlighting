@@ -40,9 +40,10 @@ Set up the identity once:
    `VSCODE_MARKETPLACE_AUTO_PUBLISH=true` under Settings → Secrets and variables
    → Actions → Variables to enable automatic publication.
 
-The automatic workflow only publishes after all CI jobs pass and the extension
-version increases. It saves the verified VSIX and digest on the matching GitHub
-release before publishing. The tagged workflow uses the same Azure identity for
+The automatic workflow only publishes after the extension checks and package
+verification pass and the extension version increases. It saves the verified
+VSIX and digest on the matching GitHub release before publishing. The tagged
+workflow uses the same Azure identity for
 Marketplace publication. Open VSX publishing remains a separate step and uses
 its own trusted-publishing environment.
 
