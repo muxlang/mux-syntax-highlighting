@@ -2,6 +2,12 @@ name: Verify VS Code Marketplace authentication
 
 on:
   workflow_dispatch:
+    inputs:
+      profile_only:
+        description: Only show the Azure identity's Marketplace profile ID
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -27,3 +33,5 @@ jobs:
         with:
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          show-marketplace-profile: ${{ inputs.profile_only }}
+          verify-publisher: ${{ !inputs.profile_only }}

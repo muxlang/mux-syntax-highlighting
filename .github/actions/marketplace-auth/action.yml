@@ -7,6 +7,14 @@ inputs:
   azure-tenant-id:
     description: Tenant ID for the managed identity
     required: true
+  show-marketplace-profile:
+    description: Print the authenticated identity's Marketplace profile ID
+    required: false
+    default: 'false'
+  verify-publisher:
+    description: Check whether the identity can publish to the muxlang publisher
+    required: false
+    default: 'true'
 runs:
   using: composite
   steps:
@@ -16,6 +24,16 @@ runs:
         client-id: ${{ inputs.azure-client-id }}
         tenant-id: ${{ inputs.azure-tenant-id }}
         allow-no-subscriptions: true
+    - name: Show Marketplace profile for authenticated identity
+      if: inputs.show-marketplace-profile == 'true'
+      shell: bash
+      run: >-
+        az rest
+        --url 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me'
+        --resource '499b84ac-1321-427f-aa17-267ca6975798'
+        --query '{displayName:displayName,id:id}'
+        --output json
     - name: Verify Marketplace publisher access
+      if: inputs.verify-publisher == 'true'
       shell: bash
       run: node node_modules/@vscode/vsce/vsce verify-pat muxlang --azure-credential

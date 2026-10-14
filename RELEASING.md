@@ -35,8 +35,11 @@ Set up the identity once:
    environment secrets. Azure login allows tenant access without a subscription
    because Marketplace publishing does not use Azure subscription resources.
 4. Run **Verify VS Code Marketplace authentication** from the Actions tab on
-   `main`. It checks the Azure login and Marketplace publisher access without
-   publishing anything.
+   `main`. To look up the managed identity before adding it to the publisher,
+   select `profile_only`; the run prints its Marketplace profile ID and does
+   not check publisher access or publish anything. Add that profile ID to the
+   `muxlang` publisher as a Contributor, then run the workflow with
+   `profile_only` unchecked to verify access.
 5. After that check passes, add the repository variable
    `VSCODE_MARKETPLACE_AUTO_PUBLISH=true` under Settings → Secrets and variables
    → Actions → Variables to enable automatic publication.
