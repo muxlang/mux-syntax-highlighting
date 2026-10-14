@@ -23,6 +23,27 @@ uploading them again.
 
 To install the package locally, run `code --install-extension language-mux.vsix`.
 
+## Recover a failed release package
+
+The workflow stops if a GitHub release has a VSIX and checksum but no build
+metadata. Remove the partial assets, then run the workflow again with destination
+`none`:
+
+```sh
+release_tag=v0.13.0
+gh release delete-asset "$release_tag" language-mux.vsix
+gh release delete-asset "$release_tag" language-mux.vsix.sha256
+```
+
+If the saved build metadata doesn't match the tag, remove all three assets
+before rebuilding:
+
+```sh
+gh release delete-asset "$release_tag" language-mux.vsix
+gh release delete-asset "$release_tag" language-mux.vsix.sha256
+gh release delete-asset "$release_tag" language-mux.build.json
+```
+
 ## Publish to Open VSX
 
 Open VSX publishing remains an optional manual workflow action. First claim the
