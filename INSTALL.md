@@ -26,7 +26,17 @@ npm run package:vscode           # generates the grammar and creates dist/langua
 code --install-extension dist/language-mux.vsix
 ```
 
-For VSCodium, use `codium --install-extension dist/language-mux.vsix`.
+If you installed an older local VSIX before the publisher ID changed, remove that copy first so it does not start a second language client:
+
+```bash
+code --uninstall-extension mux-lang.language-mux
+```
+
+For VSCodium, use `codium --install-extension dist/language-mux.vsix`. If an older local VSIX is installed there, remove it first:
+
+```bash
+codium --uninstall-extension mux-lang.language-mux
+```
 
 Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any
 `.mux` file. Colors come from your active VSCode theme, not the grammar.
