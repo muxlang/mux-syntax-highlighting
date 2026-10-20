@@ -16,42 +16,17 @@ highlighting; Emacs setup is manual.
 
 ## VSCode
 
-The maintained extension is `muxlang.language-mux`. Install **Mux Language
-Support** from the Visual Studio Marketplace. In VS Code, search the Extensions
-view for that name, or run:
-
-```bash
-code --install-extension muxlang.language-mux
-```
-
-If you installed an older local VSIX before the publisher ID changed, remove
-that copy first so it does not start a second language client:
-
-```bash
-code --uninstall-extension mux-lang.language-mux
-```
-
-For VSCodium and other editors configured to use Open VSX, search for the same
-extension or run:
-
-```bash
-codium --install-extension muxlang.language-mux
-```
-
-For an older local VSIX in VSCodium, remove its previous identity first:
-
-```bash
-codium --uninstall-extension mux-lang.language-mux
-```
-
-To install from source or test a local build, run these commands from the
-repository root:
+The maintained extension is packaged as `muxlang.language-mux`. Its v0.13.0
+registry release is still pending. Until it is published, build and install a
+local VSIX from the repository root:
 
 ```bash
 npm ci
 npm run package:vscode           # generates the grammar and creates dist/language-mux.vsix
 code --install-extension dist/language-mux.vsix
 ```
+
+For VSCodium, use `codium --install-extension dist/language-mux.vsix`.
 
 Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any
 `.mux` file. Colors come from your active VSCode theme, not the grammar.
