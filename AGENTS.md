@@ -20,7 +20,12 @@ changing syntax consumed by the compiler, tree-sitter, or website.
 
 Run `node scripts/check-parity.js` and
 `node scripts/build-editor-support.js --check` before committing.
+CI runs each parity check once, alongside sample checks. The VSCode client
+tests run in a separate job that uploads LCOV for SonarQube. The required
+Syntax Checks status combines those jobs, which can run in parallel.
 
 ## Documentation
 
 See [`README.md`](README.md) and the generator documentation under `scripts/`.
+See the [cross-repo testing policy](https://github.com/muxlang/mux-context/blob/main/docs/testing-policy.md)
+for the boundary between syntax-matrix checks and downstream parser tests.
