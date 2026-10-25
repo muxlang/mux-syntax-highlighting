@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Publish to Open VSX with an environment-scoped access token instead of
-  trusted publishing.
+- Keep Open VSX publishing as a manual VSIX upload; remove automated publishing
+  credentials from the release workflow.
 
 ## [0.13.0] - 2026-09-30
 

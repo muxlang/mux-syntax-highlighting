@@ -11,10 +11,10 @@ the Marketplace publisher page yourself.
 2. Create and push a tag named `v<version>` from that commit. For example,
    version `0.13.0` uses tag `v0.13.0`.
 3. In GitHub Actions, run **Publish VSCode extension**. Select the tag as the
-   workflow ref, enter the same tag as `release_tag`, and choose `none` as the
-   destination.
+   workflow ref and enter the same tag as `release_tag`.
 4. Download `language-mux.vsix` from the draft GitHub release or workflow
-   artifacts. Upload it on the [Marketplace publisher page](https://marketplace.visualstudio.com/manage).
+   artifacts. Upload it on the [Marketplace publisher page](https://marketplace.visualstudio.com/manage)
+   or manually through the Open VSX publisher page.
 
 The workflow checks that the tag matches the extension version. It stores the
 verified VSIX, SHA-256 digest, and build metadata on the GitHub release. A later
@@ -44,18 +44,11 @@ gh release delete-asset "$release_tag" language-mux.vsix.sha256
 gh release delete-asset "$release_tag" language-mux.build.json
 ```
 
-## Publish to Open VSX
+## Upload to Open VSX
 
-Open VSX publishing remains an optional manual workflow action. Sign the
-publisher agreement, create an Open VSX access token, and create the `muxlang`
-namespace if it does not exist. If the namespace exists but you are not an
-owner, request ownership through the Open VSX registry's public issue tracker.
-The extension's `publisher` field is `muxlang`, so the Open VSX namespace must
-match it. Save the token as the `OPEN_VSX_PAT` secret in this repository's
-`open-vsx` GitHub Actions environment.
-
-Then run **Publish VSCode extension** using the release tag as both the
-workflow ref and `release_tag`, and choose `open-vsx`. The workflow verifies the
-saved VSIX digest before publishing it with the environment-scoped token. See
-the [Open VSX publishing instructions](https://github.com/eclipse-openvsx/openvsx/wiki/Publishing-Extensions)
-for account, agreement, namespace, and token setup.
+To publish manually, sign in to Open VSX, accept its publisher agreement, and
+claim the `muxlang` namespace if needed. The extension's `publisher` field is
+`muxlang`, so the namespace must match. Upload the downloaded
+`language-mux.vsix` from the Open VSX publisher page. See the
+[Open VSX publishing instructions](https://github.com/eclipse-openvsx/openvsx/wiki/Publishing-Extensions)
+for account and namespace setup.
