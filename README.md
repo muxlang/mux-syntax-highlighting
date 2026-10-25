@@ -26,8 +26,9 @@ and the tree-sitter editors). The maintained VS Code extension is packaged as
 `muxlang.language-mux`; its v0.13.0 release has not been published to the
 registries yet. Until then, build and install the VSIX from this repository.
 The tagged release workflow prepares a verified VSIX for Marketplace upload
-and can publish to Open VSX after its namespace is configured. See
-[RELEASING.md](RELEASING.md) for release steps.
+and can publish to Open VSX after the `muxlang` namespace is claimed and the
+`OPEN_VSX_PAT` secret is set in the `open-vsx` GitHub Actions environment. See
+[RELEASING.md](RELEASING.md) for setup and release steps.
 
 ---
 

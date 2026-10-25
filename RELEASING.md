@@ -46,9 +46,16 @@ gh release delete-asset "$release_tag" language-mux.build.json
 
 ## Publish to Open VSX
 
-Open VSX publishing remains an optional manual workflow action. First claim the
-`muxlang` namespace and configure trusted publishing for the
-`muxlang/mux-syntax-highlighting` repository, this workflow file, and the
-`open-vsx` GitHub environment. Then run **Publish VSCode extension** using the
-release tag and choose `open-vsx`. The workflow verifies the saved VSIX digest
-before publishing. See the [Open VSX trusted publishing instructions](https://github.com/eclipse-openvsx/openvsx/blob/main/cli/README.md#trusted-publishing).
+Open VSX publishing remains an optional manual workflow action. Sign the
+publisher agreement, create an Open VSX access token, and create the `muxlang`
+namespace if it does not exist. If the namespace exists but you are not an
+owner, request ownership through the Open VSX registry's public issue tracker.
+The extension's `publisher` field is `muxlang`, so the Open VSX namespace must
+match it. Save the token as the `OPEN_VSX_PAT` secret in this repository's
+`open-vsx` GitHub Actions environment.
+
+Then run **Publish VSCode extension** using the release tag as both the
+workflow ref and `release_tag`, and choose `open-vsx`. The workflow verifies the
+saved VSIX digest before publishing it with the environment-scoped token. See
+the [Open VSX publishing instructions](https://github.com/eclipse-openvsx/openvsx/wiki/Publishing-Extensions)
+for account, agreement, namespace, and token setup.

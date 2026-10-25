@@ -72,7 +72,6 @@ jobs:
     environment: open-vsx
     permissions:
       contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -88,6 +87,16 @@ jobs:
           path: dist
       - name: Verify artifact digest
         run: cd dist && sha256sum --check language-mux.vsix.sha256
-      - name: Publish verified VSIX
+      - name: Check Open VSX token
+        env:
+          OVSX_PAT: ${{ secrets.OPEN_VSX_PAT }}
         run: |
-          .github/ovsx-cli/node_modules/.bin/ovsx publish --trusted-publishing dist/language-mux.vsix
+          if [[ -z "$OVSX_PAT" ]]; then
+            echo "::error::Set OPEN_VSX_PAT in the open-vsx GitHub Actions environment."
+            exit 1
+          fi
+      - name: Publish verified VSIX
+        env:
+          OVSX_PAT: ${{ secrets.OPEN_VSX_PAT }}
+        run: |
+          .github/ovsx-cli/node_modules/.bin/ovsx publish dist/language-mux.vsix
