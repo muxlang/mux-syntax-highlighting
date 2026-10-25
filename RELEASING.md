@@ -49,8 +49,10 @@ gh release delete-asset "$release_tag" mux-programming-language.build.json
 
 After the `muxlang` namespace claim is approved, create an Open VSX access
 token. On your local machine, run `npx ovsx login muxlang` and enter the token
-when prompted. The CLI stores it in the OS credential manager. Then publish the
-verified VSIX:
+when prompted. The CLI stores it in the OS credential manager. Download the
+VSIX from the release or workflow artifact and place it at
+`dist/mux-programming-language.vsix`. A local build already creates it there.
+From the repository root, publish the verified file:
 
 ```sh
 npx ovsx publish dist/mux-programming-language.vsix
