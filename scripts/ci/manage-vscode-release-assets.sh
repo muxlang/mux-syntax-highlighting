@@ -63,18 +63,18 @@ fi
 read_asset_state() {
   local names
   names=$(gh release view "$release_tag" --repo "$repository" --json assets --jq '[.assets[].name]')
-  has_vsix=$(jq -r 'index("language-mux.vsix") != null' <<< "$names")
-  has_digest=$(jq -r 'index("language-mux.vsix.sha256") != null' <<< "$names")
-  has_metadata=$(jq -r 'index("language-mux.build.json") != null' <<< "$names")
+  has_vsix=$(jq -r 'index("mux-programming-language.vsix") != null' <<< "$names")
+  has_digest=$(jq -r 'index("mux-programming-language.vsix.sha256") != null' <<< "$names")
+  has_metadata=$(jq -r 'index("mux-programming-language.build.json") != null' <<< "$names")
 }
 
 download_assets() {
-  rm -f dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json
+  rm -f dist/mux-programming-language.vsix dist/mux-programming-language.vsix.sha256 dist/mux-programming-language.build.json
   gh release download "$release_tag" \
     --repo "$repository" \
-    --pattern language-mux.vsix \
-    --pattern language-mux.vsix.sha256 \
-    --pattern language-mux.build.json \
+    --pattern mux-programming-language.vsix \
+    --pattern mux-programming-language.vsix.sha256 \
+    --pattern mux-programming-language.build.json \
     --dir dist
 }
 
@@ -99,11 +99,11 @@ elif [[ "$has_vsix" == false && "$has_digest" == false && "$has_metadata" == fal
   if [[ "$mode" == tagged ]]; then
     npm run package:vscode
     npm run verify:vscode-package
-    (cd dist && sha256sum language-mux.vsix > language-mux.vsix.sha256)
+    (cd dist && sha256sum mux-programming-language.vsix > mux-programming-language.vsix.sha256)
   fi
 
-  (cd dist && sha256sum --check language-mux.vsix.sha256)
-  digest=$(sha256sum dist/language-mux.vsix | cut -d ' ' -f 1)
+  (cd dist && sha256sum --check mux-programming-language.vsix.sha256)
+  digest=$(sha256sum dist/mux-programming-language.vsix | cut -d ' ' -f 1)
   jq -n \
     --arg repository "$repository" \
     --arg release_tag "$release_tag" \
@@ -111,9 +111,9 @@ elif [[ "$has_vsix" == false && "$has_digest" == false && "$has_metadata" == fal
     --arg version "$version" \
     --arg sha256 "$digest" \
     '{repository: $repository, release_tag: $release_tag, source_commit: $source_commit, version: $version, sha256: $sha256}' \
-    > dist/language-mux.build.json
+    > dist/mux-programming-language.build.json
   if ! gh release upload "$release_tag" --repo "$repository" \
-    dist/language-mux.vsix dist/language-mux.vsix.sha256 dist/language-mux.build.json; then
+    dist/mux-programming-language.vsix dist/mux-programming-language.vsix.sha256 dist/mux-programming-language.build.json; then
     echo "Another run may be persisting this release; waiting for its complete asset set."
     if ! wait_for_complete_assets; then
       echo "No complete VSIX asset set appeared for $release_tag." >&2
@@ -128,8 +128,8 @@ else
   fi
 fi
 
-(cd dist && sha256sum --check language-mux.vsix.sha256)
-digest=$(sha256sum dist/language-mux.vsix | cut -d ' ' -f 1)
+(cd dist && sha256sum --check mux-programming-language.vsix.sha256)
+digest=$(sha256sum dist/mux-programming-language.vsix | cut -d ' ' -f 1)
 if ! jq -e \
   --arg repository "$repository" \
   --arg release_tag "$release_tag" \
@@ -137,7 +137,7 @@ if ! jq -e \
   --arg version "$version" \
   --arg sha256 "$digest" \
   '.repository == $repository and .release_tag == $release_tag and .source_commit == $source_commit and .version == $version and .sha256 == $sha256' \
-  dist/language-mux.build.json >/dev/null; then
+  dist/mux-programming-language.build.json >/dev/null; then
   echo "Release $release_tag has VSIX metadata that does not match its source or package." >&2
   exit 1
 fi

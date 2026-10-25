@@ -5,15 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.1] - 2026-10-25
+
+### Changed
+- Match the extension package ID and VSIX filename to the existing Marketplace
+  listing, `muxlang.mux-programming-language`.
+- Prepare version 0.13.1 for publication to Open VSX.
+
 ## [0.13.0] - 2026-09-30
 
 ### Added
 - The VSCode extension starts the released `mux lsp` server. Syntax
   highlighting remains available when the server is missing.
-- Publish the verified extension through the Visual Studio Marketplace and Open
-  VSX using the same package and its recorded SHA-256 digest.
-- Document registry installation for users and trusted publishing setup for
-  maintainers.
+- Publish the extension through the Visual Studio Marketplace as
+  `muxlang.mux-programming-language`.
+- Document Marketplace installation and release steps for maintainers.
 
 ### Changed
 - Set the extension version to 0.13.0 to match the Mux compiler release series.
