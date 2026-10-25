@@ -3,9 +3,9 @@
 Provides syntax highlighting, language configuration, and a client for the
 compiler's `mux lsp` server for Mux files (`.mux`) in Visual Studio Code.
 
-The extension package identifier is `muxlang.language-mux`. Its v0.13.0
-registry release is still pending; build and install the local VSIX using the
-instructions in [INSTALL.md](../../INSTALL.md) until it is published.
+The extension package identifier is `muxlang.mux-programming-language`. The
+Visual Studio Marketplace lists this extension under that ID. Build and
+install a local VSIX using the instructions in [INSTALL.md](../../INSTALL.md).
 
 ## Features
 - Syntax highlighting (keywords, strings, comments, operators, literals)
@@ -39,7 +39,7 @@ npm run verify:vscode-package
 
 ### Install Locally
 ```bash
-code --install-extension dist/language-mux.vsix
+code --install-extension dist/mux-programming-language.vsix
 ```
 
 Reload the window afterward (Ctrl+Shift+P -> "Developer: Reload Window").

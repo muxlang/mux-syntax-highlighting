@@ -16,26 +16,29 @@ highlighting; Emacs setup is manual.
 
 ## VSCode
 
-The maintained extension is packaged as `muxlang.language-mux`. Its v0.13.0
-registry release is still pending. Until it is published, build and install a
-local VSIX from the repository root:
+The maintained extension is published on the Visual Studio Marketplace as
+`muxlang.mux-programming-language`. To build and install a local VSIX from the
+repository root:
 
 ```bash
 npm ci
-npm run package:vscode           # generates the grammar and creates dist/language-mux.vsix
-code --install-extension dist/language-mux.vsix
+npm run package:vscode           # generates the grammar and creates dist/mux-programming-language.vsix
+code --install-extension dist/mux-programming-language.vsix
 ```
 
-If you installed an older local VSIX before the publisher ID changed, remove that copy first so it does not start a second language client:
+If you installed an older local VSIX, remove that copy first so it does not
+start a second language client:
 
 ```bash
 code --uninstall-extension mux-lang.language-mux
+code --uninstall-extension muxlang.language-mux
 ```
 
-For VSCodium, use `codium --install-extension dist/language-mux.vsix`. If an older local VSIX is installed there, remove it first:
+For VSCodium, use `codium --install-extension dist/mux-programming-language.vsix`. If an older local VSIX is installed there, remove it first:
 
 ```bash
 codium --uninstall-extension mux-lang.language-mux
+codium --uninstall-extension muxlang.language-mux
 ```
 
 Reload the window (`Ctrl+Shift+P` -> "Developer: Reload Window") and open any

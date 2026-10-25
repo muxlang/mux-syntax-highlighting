@@ -22,9 +22,9 @@ separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 ## Installation
 
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
-and the tree-sitter editors). The maintained VS Code extension is packaged as
-`muxlang.language-mux`; its v0.13.0 release has not been published to the
-registries yet. Until then, build and install the VSIX from this repository.
+and the tree-sitter editors). The Visual Studio Marketplace lists the
+maintained extension as `muxlang.mux-programming-language`. Version 0.13.1
+updates the package metadata to match that ID for Open VSX publication.
 The tagged release workflow prepares a verified VSIX for Marketplace upload
 and can publish to Open VSX after its namespace is configured. See
 [RELEASING.md](RELEASING.md) for release steps.
@@ -55,7 +55,7 @@ node scripts/generate-syntax.js                     # regenerate the TextMate gr
 node scripts/check-parity.js                        # verify TextMate parity (CI)
 node scripts/build-editor-support.js                # regenerate editor-support configs
 node scripts/build-editor-support.js --check        # verify editor-support parity (CI)
-npm ci && npm run package:vscode                   # create dist/language-mux.vsix
+npm ci && npm run package:vscode                   # create dist/mux-programming-language.vsix
 ```
 
 CI runs the two parity checks plus a SonarQube scan.

@@ -8,7 +8,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const extension = path.join(root, 'textmate-mux', 'vscode-language-mux');
 const dist = path.join(root, 'dist');
-const output = path.join(dist, 'language-mux.vsix');
+const output = path.join(dist, 'mux-programming-language.vsix');
 const vsce = path.join(root, 'node_modules', '@vscode', 'vsce', 'vsce');
 const esbuild = path.join(root, 'node_modules', 'esbuild', 'bin', 'esbuild');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';

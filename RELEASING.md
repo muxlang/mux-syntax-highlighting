@@ -9,19 +9,20 @@ the Marketplace publisher page yourself.
 1. Update the extension version in `textmate-mux/vscode-language-mux/package.json`
    and merge the release change.
 2. Create and push a tag named `v<version>` from that commit. For example,
-   version `0.13.0` uses tag `v0.13.0`.
+   version `0.13.1` uses tag `v0.13.1`.
 3. In GitHub Actions, run **Publish VSCode extension**. Select the tag as the
    workflow ref, enter the same tag as `release_tag`, and choose `none` as the
    destination.
-4. Download `language-mux.vsix` from the draft GitHub release or workflow
-   artifacts. Upload it on the [Marketplace publisher page](https://marketplace.visualstudio.com/manage).
+4. Download `mux-programming-language.vsix` from the draft GitHub release or
+   workflow artifacts. Upload it on the [Marketplace publisher page](https://marketplace.visualstudio.com/manage).
 
 The workflow checks that the tag matches the extension version. It stores the
 verified VSIX, SHA-256 digest, and build metadata on the GitHub release. A later
 run for the same tag reuses those assets and verifies their metadata before
 uploading them again.
 
-To install the package locally, run `code --install-extension language-mux.vsix`.
+To install the package locally, run
+`code --install-extension mux-programming-language.vsix`.
 
 ## Recover a failed release package
 
@@ -30,25 +31,32 @@ metadata. Remove the partial assets, then run the workflow again with destinatio
 `none`:
 
 ```sh
-release_tag=v0.13.0
-gh release delete-asset "$release_tag" language-mux.vsix
-gh release delete-asset "$release_tag" language-mux.vsix.sha256
+release_tag=v0.13.1
+gh release delete-asset "$release_tag" mux-programming-language.vsix
+gh release delete-asset "$release_tag" mux-programming-language.vsix.sha256
 ```
 
 If the saved build metadata doesn't match the tag, remove all three assets
 before rebuilding:
 
 ```sh
-gh release delete-asset "$release_tag" language-mux.vsix
-gh release delete-asset "$release_tag" language-mux.vsix.sha256
-gh release delete-asset "$release_tag" language-mux.build.json
+gh release delete-asset "$release_tag" mux-programming-language.vsix
+gh release delete-asset "$release_tag" mux-programming-language.vsix.sha256
+gh release delete-asset "$release_tag" mux-programming-language.build.json
 ```
 
 ## Publish to Open VSX
 
-Open VSX publishing remains an optional manual workflow action. First claim the
-`muxlang` namespace and configure trusted publishing for the
-`muxlang/mux-syntax-highlighting` repository, this workflow file, and the
-`open-vsx` GitHub environment. Then run **Publish VSCode extension** using the
-release tag and choose `open-vsx`. The workflow verifies the saved VSIX digest
-before publishing. See the [Open VSX trusted publishing instructions](https://github.com/eclipse-openvsx/openvsx/blob/main/cli/README.md#trusted-publishing).
+After the `muxlang` namespace claim is approved, create an Open VSX access
+token. On your local machine, run `npx ovsx login muxlang` and enter the token
+when prompted. The CLI stores it in the OS credential manager. Download the
+VSIX from the release or workflow artifact and place it at
+`dist/mux-programming-language.vsix`. A local build already creates it there.
+From the repository root, publish the verified file:
+
+```sh
+npx ovsx publish dist/mux-programming-language.vsix
+```
+
+This publishes the extension as `muxlang.mux-programming-language`, matching
+the Visual Studio Marketplace ID. See the [Open VSX publishing instructions](https://github.com/eclipse-openvsx/openvsx/wiki/Publishing-Extensions).

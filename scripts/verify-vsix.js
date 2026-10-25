@@ -5,7 +5,7 @@ const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const yauzl = require('yauzl');
 
-const archive = path.resolve(__dirname, '..', 'dist', 'language-mux.vsix');
+const archive = path.resolve(__dirname, '..', 'dist', 'mux-programming-language.vsix');
 const packageManifest = path.resolve(
   __dirname,
   '..',
@@ -126,7 +126,7 @@ async function verify() {
   const grammar = packageJson.contributes?.grammars?.find((item) => item.language === 'mux');
   if (
     packageJson.publisher !== 'muxlang' ||
-    packageJson.name !== 'language-mux' ||
+    packageJson.name !== 'mux-programming-language' ||
     grammar?.scopeName !== 'source.mux' ||
     grammar?.path !== './source.mux.json' ||
     packageJson.main !== 'extension.bundle.js' ||
