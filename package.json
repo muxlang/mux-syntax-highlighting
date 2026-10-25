@@ -1,6 +1,6 @@
 {
   "name": "mux-syntax-highlighting",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "private": true,
   "description": "Quality tooling for the Mux TextMate syntax definitions",
   "scripts": {

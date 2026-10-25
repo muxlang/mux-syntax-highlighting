@@ -1,8 +1,8 @@
 {
   "name": "mux-programming-language",
-  "displayName": "Mux Language Support",
+  "displayName": "Mux Language Tools",
   "description": "Syntax highlighting and language support for the Mux programming language",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "publisher": "muxlang",
   "license": "MIT",
   "icon": "./mux-icon.png",

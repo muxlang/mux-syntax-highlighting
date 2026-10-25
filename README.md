@@ -23,8 +23,9 @@ separate [tree-sitter-mux](https://github.com/muxlang/tree-sitter-mux) repo.
 
 See [INSTALL.md](INSTALL.md) for per-editor setup (VSCode, Sublime, JetBrains,
 and the tree-sitter editors). The Visual Studio Marketplace lists the
-maintained extension as `muxlang.mux-programming-language`. Version 0.13.1
-updates the package metadata to match that ID for Open VSX publication.
+maintained extension as `muxlang.mux-programming-language` with the display
+name "Mux Language Tools". Version 0.13.2 uses that accepted display name for
+the next upload to both registries.
 The tagged release workflow prepares a verified VSIX for Marketplace upload
 and can publish to Open VSX after its namespace is configured. See
 [RELEASING.md](RELEASING.md) for release steps.

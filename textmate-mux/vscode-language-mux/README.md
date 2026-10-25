@@ -1,4 +1,4 @@
-# Mux Language Support for VSCode
+# Mux Language Tools for Visual Studio Code
 
 Provides syntax highlighting, language configuration, and a client for the
 compiler's `mux lsp` server for Mux files (`.mux`) in Visual Studio Code.

@@ -9,7 +9,7 @@ the Marketplace publisher page yourself.
 1. Update the extension version in `textmate-mux/vscode-language-mux/package.json`
    and merge the release change.
 2. Create and push a tag named `v<version>` from that commit. For example,
-   version `0.13.1` uses tag `v0.13.1`.
+   version `0.13.2` uses tag `v0.13.2`.
 3. In GitHub Actions, run **Publish VSCode extension**. Select the tag as the
    workflow ref, enter the same tag as `release_tag`, and choose `none` as the
    destination.
@@ -31,7 +31,7 @@ metadata. Remove the partial assets, then run the workflow again with destinatio
 `none`:
 
 ```sh
-release_tag=v0.13.1
+release_tag=v0.13.2
 gh release delete-asset "$release_tag" mux-programming-language.vsix
 gh release delete-asset "$release_tag" mux-programming-language.vsix.sha256
 ```
