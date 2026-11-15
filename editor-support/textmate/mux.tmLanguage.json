@@ -35,6 +35,15 @@
     "comments": {
       "patterns": [
         {
+          "name": "comment.line.documentation.mux",
+          "match": "///[^\\n]*"
+        },
+        {
+          "name": "comment.block.documentation.mux",
+          "begin": "/\\*\\*",
+          "end": "\\*/"
+        },
+        {
           "name": "comment.line.double-slash.mux",
           "match": "//.*$"
         },

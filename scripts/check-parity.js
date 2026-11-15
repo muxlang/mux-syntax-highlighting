@@ -97,6 +97,8 @@ assertContainsAll(
   [
     'comment.line.double-slash.mux',
     'comment.block.mux',
+    'comment.line.documentation.mux',
+    'comment.block.documentation.mux',
     'string.quoted.single.mux',
     'string.quoted.double.mux',
     'string.quoted.bytes.mux',
