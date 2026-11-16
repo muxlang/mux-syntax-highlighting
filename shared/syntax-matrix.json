@@ -105,7 +105,7 @@
   },
   "comments": {
     "doc_line": { "pattern": "///[^\\n]*", "description": "MuxDoc line comment" },
-    "doc_block": { "begin": "/\\*\\*", "end": "\\*/", "pattern": "/\\*\\*[\\s\\S]*?\\*/", "description": "MuxDoc block comment" },
+    "doc_block": { "begin": "/\\*\\*(?!/)", "end": "\\*/", "pattern": "/\\*\\*(?!/)[\\s\\S]*?\\*/", "description": "MuxDoc block comment" },
     "line": { "token": "LineComment", "pattern": "//[^\n]*", "description": "single-line comment" },
     "block": { "token": "MultilineComment", "pattern": "/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/", "description": "multi-line comment" }
   },
