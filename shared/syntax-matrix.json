@@ -104,6 +104,8 @@
     "note": "A leading underscore needs at least one character after it, so a bare '_' stays the wildcard and unused-parameter marker rather than a name. The pattern is wrapped in a non-capturing group because consumers interpolate it between anchors."
   },
   "comments": {
+    "doc_line": { "pattern": "///[^\\n]*", "description": "MuxDoc line comment" },
+    "doc_block": { "begin": "/\\*\\*(?!/)", "end": "\\*/", "pattern": "/\\*\\*(?!/)[\\s\\S]*?\\*/", "description": "MuxDoc block comment" },
     "line": { "token": "LineComment", "pattern": "//[^\n]*", "description": "single-line comment" },
     "block": { "token": "MultilineComment", "pattern": "/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/", "description": "multi-line comment" }
   },
