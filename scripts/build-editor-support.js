@@ -50,6 +50,7 @@ function specFromMatrix(matrix) {
       literal: [...keywords.boolean_literals, ...keywords.constant],
     },
     types: { builtin: matrix.types.builtin },
+    comments: matrix.comments,
     operators,
     punctuation: { brackets, delimiters },
     // `identifier` is a word-bounded editor variant with no canonical
@@ -118,6 +119,8 @@ function buildTextmate(spec) {
     repository: {
       comments: {
         patterns: [
+          { name: 'comment.line.documentation.mux', match: spec.comments.doc_line.pattern },
+          { name: 'comment.block.documentation.mux', begin: spec.comments.doc_block.begin, end: spec.comments.doc_block.end },
           { name: 'comment.line.double-slash.mux', match: '//.*$' },
           { name: 'comment.block.mux', begin: String.raw`/\*`, end: String.raw`\*/` },
         ],
@@ -200,6 +203,15 @@ function buildSublimeSyntax(spec) {
     '    - include: operators',
     '    - include: punctuation',
     '  comments:',
+    `    - match: ${spec.comments.doc_line.pattern}`,
+    '      scope: comment.line.documentation.mux',
+    `    - match: ${spec.comments.doc_block.begin}`,
+    '      scope: punctuation.definition.comment.begin.mux',
+    PUSH_LINE,
+    '        - meta_scope: comment.block.documentation.mux',
+    `        - match: ${spec.comments.doc_block.end}`,
+    '          scope: punctuation.definition.comment.end.mux',
+    POP_TRUE_LINE,
     '    - match: //.*$',
     '      scope: comment.line.double-slash.mux',
     String.raw`    - match: /\*`,

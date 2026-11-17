@@ -56,6 +56,15 @@ function textmateGrammar() {
       comments: {
         patterns: [
           {
+            name: 'comment.line.documentation.mux',
+            match: matrix.comments.doc_line.pattern,
+          },
+          {
+            name: 'comment.block.documentation.mux',
+            begin: matrix.comments.doc_block.begin,
+            end: matrix.comments.doc_block.end,
+          },
+          {
             name: 'comment.line.double-slash.mux',
             match: matrix.comments.line.pattern,
           },
